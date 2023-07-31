@@ -1,0 +1,38 @@
+{% comment %} {% load account %} {% endcomment %}
+{% comment %} {% load common %} {% endcomment %}
+
+<nav class="sidenav shadow-right sidenav-light">
+    <div class="sidenav-menu">
+        <div class="nav accordion" id="accordionSidenav">
+            <div class="sidenav-menu-heading">Documentaciones</div>
+            <!-- Navbar for AssetClass -->
+            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseOrdinarios" aria-expanded="false" aria-controls="collapseAssetClass">
+                <div class="nav-link-icon"><i data-feather="grid"></i></div>
+                Gestión Documental
+                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseOrdinarios" data-bs-parent="#accordionSidenav">
+                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                    <a class="nav-link" href="{% url 'website:home' %}" url_name="website:home">
+                        <!-- Icon -->
+                        <div class="nav-link-icon">
+                            <i data-feather="file-text"></i>
+                        </div>
+                        Ordinarios
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidenav Footer-->
+    {% comment %} <div class="sidenav-footer">
+        <div class="sidenav-footer-content">
+            {% comment %} {% if user.is_authenticated %}
+                {% user_display user as user_display %}
+            <div class="sidenav-footer-subtitle">Registrado como:</div>
+            <div class="sidenav-footer-title">{{ user_display|title }}</div>
+            {% endif %} {% endcomment %}
+        {% comment %} </div>
+    </div> {% endcomment %}
+</nav>

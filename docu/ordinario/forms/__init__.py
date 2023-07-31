@@ -1,0 +1,1 @@
+from .pdf_generation_form import OrdinarioPdfForm

@@ -1,0 +1,39 @@
+version: '3.8'
+
+volumes:
+  database_data:
+    driver: local
+
+services:
+  db-docu:
+    image: postgres
+    environment:
+      POSTGRES_DB: docu
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5431:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  webapp-docu:
+    image: python:3.11.4
+    build: .
+    command: >
+          sh -c "
+          python3 manage.py migrate &&
+          python3 manage.py runserver 0.0.0.0:8000 --settings=docu.settings"
+    volumes:
+      - ./docu/:/docu
+    depends_on:
+      - db-docu
+    ports:
+      - 8020:8000
+    environment:
+      DATABASE_HOST: db-docu
+      DATABASE_NAME: docu
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_PORT: 5432
+    env_file:
+      - .env
