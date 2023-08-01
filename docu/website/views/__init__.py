@@ -1,5 +1,2 @@
-from .home import (
-    index,
-    report
-)
-# from .generate_pdf import report
+from .add_ordinario import AddOrdinario
+from .home import Home

@@ -15,40 +15,48 @@
 </style>
 {% endblock css %}
 
-{% block content_header_title %}
-    <div class="page-header-icon"><i data-feather="file-text"></i></div> Generador de Documentos: Ordinarios
-{% endblock content_header_title %}
+{% block content_header %}
+
+<!-- Main page content-->
+<div class="container-xl px-4 mt-5">
+    <!-- Custom page header alternative example-->
+    <div class="d-flex justify-content-between align-items-sm-center flex-column flex-sm-row mb-4">
+        <div class="me-4 mb-3 mb-sm-0">
+            {% comment %} <h1 class="mb-0">Docu</h1> {% endcomment %}
+            {% comment %} <div class="small">
+                <span class="fw-500 text-primary">Friday</span>
+                &middot; September 20, 2021 &middot; 12:16 PM
+            </div> {% endcomment %}
+        </div>
+    </div>
+
+    <!-- Illustration dashboard card example-->
+    <div class="card card-waves mb-4 mt-5">
+        <div class="card-body p-5">
+            <div class="row align-items-center justify-content-between">
+                <div class="col">
+                    <h2 class="text-primary">Bienvenido a Docu!</h2>
+                    <p class="text-gray-700">La herramienta para generar diferentes tipos de documentos en formato PDF.</p>
+                    <a class="btn btn-primary p-3" href="#!">
+                        Comenzar
+                        <i class="ms-1" data-feather="arrow-right"></i>
+                    </a>
+                </div>
+                <div class="col d-none d-lg-block mt-xxl-n4"><img class="img-fluid px-xl-4 mt-xxl-n5" src="{% static 'website/img/logo.png' %}"/></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content_header %}
+
+{% block content_header_title %}{% endblock content_header_title %}
 
 {% block content_header_subtitle %}{% endblock content_header_subtitle %}
 
 {% block content_header_extra %}{% endblock content_header_extra %}
 
 {% block content_body %}
-
-<div id="default">
-    <div class="card mb-4">
-        <div class="card-header">Genere su documento</div>
-        <div class="card-body">
-            <!-- Component Preview-->
-            <div class="sbp-preview">
-                <div class="sbp-preview-content">
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        {{ form.media }}
-                        {{ form }}  
-                        <br> 
-                        <!-- Button trigger modal -->
-                        {% comment %} <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Launch Vertically Centered Modal</button> {% endcomment %}
-                        <input type="submit" value="Generar Ordinario" class="btn btn-primary me-2 my-1">
-                    </form>
-                </div>
-                {% comment %} <div class="sbp-preview-text">The default Bootstrap form control states have been restyled to fit the SB Admin Pro theme. The style has changed, but the markup is identical.</div> {% endcomment %}
-            </div>
-        </div>
-    </div>
-</div> 
-
-{% include './partial/modal_distribucion_externa.html' %}
 
 {% endblock content_body %}
 
