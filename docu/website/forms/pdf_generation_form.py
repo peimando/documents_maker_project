@@ -4,7 +4,9 @@ from common.utils.distribucion import TipoDistribucion
 from ckeditor.widgets import CKEditorWidget
 
 
-class OrdinarioPdfForm(forms.Form):
+class OrdinarioPdfForm(
+    forms.Form
+):
 
     ant = forms.CharField(
         initial='No hay',

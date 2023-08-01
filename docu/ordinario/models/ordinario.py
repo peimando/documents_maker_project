@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.urls import reverse
+from django.utils.text import slugify
 from .distribucion import DistribucionExterna
 
 
@@ -45,6 +48,31 @@ class Ordinario(models.Model):
     # distribucion_interna = models.
 
     distribucion_externa = models.ForeignKey(
-        to=DistribucionExterna,
-        on_delete=models.CASCADE
+        'DistribucionExterna',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
     )
+
+    slug = models.SlugField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self) -> str:
+        return self.materia
+    
+    # def get_absolute_url(self):
+
+    #     return reverse(
+    #         'website:create_document', kwargs={"slug": self.slug})
+
+
+def ordinario_post_save(sender, instance, created, *args, **kwargs):
+    if created or instance.slug in [None, ""]:
+        instance.slug = slugify(f"{str(instance.id)}-{instance.materia}")
+
+        instance.save()
+
+post_save.connect(ordinario_post_save, sender=Ordinario)
