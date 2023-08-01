@@ -25,47 +25,47 @@ class AddOrdinario(CreateView):
         
         self.object = form.save(commit=False)
 
-        # ant = form.cleaned_data['ant']
-        # mat = form.cleaned_data['mat']
-        # de = form.cleaned_data['de']
-        # cargo_de = form.cleaned_data['cargo_de']
-        # a = form.cleaned_data['a']
-        # cargo_a = form.cleaned_data['cargo_a']
-        # cuerpo = form.cleaned_data['cuerpo']
-        # adj = form.cleaned_data['adj']
-        # tipo_distribucion = form.cleaned_data['tipo_distribucion']
-        # distribuciones_internas = form.cleaned_data['distribuciones_internas']
-        # distribucion_externa = form.cleaned_data['distribucion_externa']
-        # direccion_distribucion_externa = form.cleaned_data['direccion_distribucion_externa']
-        # servicio = form.cleaned_data['servicio']
-        # servicio = dict(form.fields['servicio'].choices)[servicio]
-        # telefono = form.cleaned_data['telefono']
+        ant = form.cleaned_data['ant']
+        mat = form.cleaned_data['mat']
+        de = form.cleaned_data['de']
+        cargo_de = form.cleaned_data['cargo_de']
+        a = form.cleaned_data['a']
+        cargo_a = form.cleaned_data['cargo_a']
+        cuerpo = form.cleaned_data['cuerpo']
+        adj = form.cleaned_data['adj']
+        tipo_distribucion = form.cleaned_data['tipo_distribucion']
+        distribuciones_internas = form.cleaned_data['distribuciones_internas']
+        distribucion_externa = form.cleaned_data['distribucion_externa']
+        direccion_distribucion_externa = form.cleaned_data['direccion_distribucion_externa']
+        servicio = form.cleaned_data['servicio']
+        servicio = dict(form.fields['servicio'].choices)[servicio]
+        telefono = form.cleaned_data['telefono']
 
-        # selected_choices = distribuciones_internas
-        # choices = dict(form.fields['distribuciones_internas'].choices)
+        selected_choices = distribuciones_internas
+        choices = dict(form.fields['distribuciones_internas'].choices)
 
-        # selected_choices_values = [choices[selected_key] for selected_key in choices.keys() if selected_key in selected_choices]
+        selected_choices_values = [choices[selected_key] for selected_key in choices.keys() if selected_key in selected_choices]
 
-        # form_data = {
-        #     'ant': ant,
-        #     'mat': mat,
-        #     'de': de,
-        #     'cargo_de': cargo_de,
-        #     'a': a,
-        #     'cargo_a': cargo_a,
-        #     'cuerpo': cuerpo,
-        #     'adj': adj,
-        #     'tipo_distribucion': tipo_distribucion,
-        #     'distribuciones_internas': selected_choices_values,
-        #     'distribucion_externa': distribucion_externa,
-        #     'direccion_distribucion_externa': direccion_distribucion_externa,
-        #     'servicio': servicio,
-        #     'telefono': str(telefono)
-        # }
+        form_data = {
+            'ant': ant,
+            'mat': mat,
+            'de': de,
+            'cargo_de': cargo_de,
+            'a': a,
+            'cargo_a': cargo_a,
+            'cuerpo': cuerpo,
+            'adj': adj,
+            'tipo_distribucion': tipo_distribucion,
+            'distribuciones_internas': selected_choices_values,
+            'distribucion_externa': distribucion_externa,
+            'direccion_distribucion_externa': direccion_distribucion_externa,
+            'servicio': servicio,
+            'telefono': str(telefono)
+        }
 
-        # print(form_data)
+        print(form_data)
 
-        # self.object = form.save()
+        self.object = form.save()
 
         messages.add_message(
             self.request,

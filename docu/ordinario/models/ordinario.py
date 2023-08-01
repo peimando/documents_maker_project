@@ -2,7 +2,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.urls import reverse
 from django.utils.text import slugify
+
+from common.utils.servicios_hls import ServiciosChoices
+
 from .distribucion import DistribucionExterna
+
 
 
 class Ordinario(models.Model):
@@ -45,13 +49,23 @@ class Ordinario(models.Model):
         ]
     )
     
-    # distribucion_interna = models.
+    distribucion_interna = models.CharField(
+        null=True,
+        blank=True
+    )
 
     distribucion_externa = models.ForeignKey(
         'DistribucionExterna',
         blank=True,
         null=True,
         on_delete=models.SET_NULL
+    )
+
+    servicio = models.CharField(
+        null=True,
+        blank=True,
+        choices=ServiciosChoices.SERVICIOS_CHOICES,
+        default=ServiciosChoices.DIR
     )
 
     slug = models.SlugField(

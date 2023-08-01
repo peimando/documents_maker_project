@@ -5,6 +5,8 @@ Servicios o Unidades del HLS
 
 class ServiciosChoices(object):
 
+    DIR = 'Dirección'
+
     SERVICIOS_CHOICES = [
         ('ASENF', 'Asenf'),
         ('CAPMED', 'Capítulo Médico'),
@@ -25,7 +27,7 @@ class ServiciosChoices(object):
         ('CPARI', 'Comité Paritario'),
         ('DCSP', 'Departamento de Calidad y Seguridad del Paciente'),
         ('DPCDI', 'Departamento de Planificación, Control y Desarrollo Institucional'),
-        ('DIR', 'Dirección'),
+        (DIR, 'Dirección'),
         ('FENATS', 'Fenats'),
         ('FENPRUSS', 'Fenpruss'),
         ('HSMP', 'Hogar de Salud Mental Protegido'),
