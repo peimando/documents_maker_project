@@ -13,12 +13,19 @@
             </a>
             <div class="collapse" id="collapseOrdinarios" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                    <a class="nav-link" href="{% url 'website:home' %}" url_name="website:home">
+                    <a class="nav-link" href="{% url 'website:list_ordinarios' %}" url_name="website:list_ordinario">
                         <!-- Icon -->
                         <div class="nav-link-icon">
-                            <i data-feather="file-text"></i>
+                            <i data-feather="list"></i>
                         </div>
-                        Ordinarios
+                        Lista de ordinarios
+                    </a>
+                    <a class="nav-link" href="{% url 'website:add_ordinario' %}" url_name="website:add_ordinario">
+                        <!-- Icon -->
+                        <div class="nav-link-icon">
+                            <i data-feather="plus"></i>
+                        </div>
+                        Agregar ordinario
                     </a>
                 </nav>
             </div>

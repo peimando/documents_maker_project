@@ -1,0 +1,58 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block head_title %}Generador de Documentos{% endblock head_title %}
+
+{% block css %}
+<style>
+    .django-ckeditor-widget {
+        width: 100%;
+    }
+
+    .helptext {
+        
+    }
+</style>
+{% endblock css %}
+
+{% block url_name %}website:add_ordinario{% endblock url_name %}
+
+{% block content_header_title %}
+    <div class="page-header-icon"><i data-feather="plus"></i></div> Agregar Ordinario
+{% endblock content_header_title %}
+
+{% block content_header_subtitle %}{% endblock content_header_subtitle %}
+
+{% block content_header_extra %}{% endblock content_header_extra %}
+
+{% block content_body %}
+
+<div id="default">
+    <div class="card mb-4">
+        <div class="card-header">Genere su documento</div>
+        <div class="card-body text-left">
+            <!-- Component Preview-->
+            <div class="sbp-preview">
+                <div class="sbp-preview-content">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {{ form }}  
+                        <br>
+                        <div class="modal-footer">
+                            <a href="{% url 'website:list_ordinarios' %}" class="btn btn-light" type="button">Volver</a>
+                            <button type="submit" class="btn btn-primary me-2 my-1">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                {% comment %} <div class="sbp-preview-text">The default Bootstrap form control states have been restyled to fit the SB Admin Pro theme. The style has changed, but the markup is identical.</div> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div> 
+
+{% include './partial/modal_distribucion_externa.html' %}
+
+{% endblock content_body %}
+
+{% block js %}{% endblock js %}

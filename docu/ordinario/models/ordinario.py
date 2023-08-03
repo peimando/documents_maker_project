@@ -1,6 +1,8 @@
 from django.db import models
-from .distribucion import DistribucionExterna
-
+from django.db.models.signals import post_save
+from django.utils.text import slugify
+from django.urls import reverse
+from common.utils.servicios_hls import ServiciosChoices
 
 class Ordinario(models.Model):
 
@@ -34,17 +36,59 @@ class Ordinario(models.Model):
         max_length=50
     )
 
-    tipo_distribucion = models.BooleanField(
-        default=True,
-        choices=[
-            ('INT', 'Interna'),
-            ('EXT', 'Externa')
-        ]
+    tipo_distribucion = models.CharField(
+        null=True,
+        blank=True,
+        max_length=10
     )
     
-    # distribucion_interna = models.
+    distribucion_interna = models.CharField(
+        null=True,
+        blank=True
+    )
 
     distribucion_externa = models.ForeignKey(
-        to=DistribucionExterna,
-        on_delete=models.CASCADE
+        'DistribucionExterna',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
     )
+
+    servicio = models.CharField(
+        null=True,
+        blank=True,
+        choices=ServiciosChoices.SERVICIOS_CHOICES,
+        default=ServiciosChoices.DIR
+    )
+
+    telefono = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
+    slug = models.SlugField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self) -> str:
+        return self.materia
+    
+    def get_absolute_url(self):
+
+        return reverse(
+            'website:detail_ordinario', 
+            kwargs={
+                'slug': self.slug
+            }
+        )
+
+
+def ordinario_post_save(sender, instance, created, *args, **kwargs):
+    if created or instance.slug in [None, ""]:
+        instance.slug = slugify(f"{str(instance.id)}-{instance.materia}")
+
+        instance.save()
+
+post_save.connect(ordinario_post_save, sender=Ordinario)

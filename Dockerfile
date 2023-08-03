@@ -16,4 +16,4 @@ COPY .env-template /docu/.env
 
 CMD python3 manage.py migrate && \
     python3 manage.py collectstatic --noinput && \
-    gunicorn --bind 0.0.0.0:$PORT --env DJANGO_SETTINGS_MODULE=ramplus.settings ramplus.wsgi:application --timeout 30 --keep-alive 10 --log-level debug
+    gunicorn --bind 0.0.0.0:$PORT --env DJANGO_SETTINGS_MODULE=docu.settings docu.wsgi:application --timeout 30 --keep-alive 10 --log-level debug

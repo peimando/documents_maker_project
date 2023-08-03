@@ -1,0 +1,90 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block head_title %}Docu - Detalle Ordinario{% endblock head_title %}
+
+{% block url_name %}website:list_ordinarios{% endblock url_name %}
+
+{% block content_header_title %}
+    <div class="page-header-icon"><i data-feather="file-text"></i></div>
+    {{ object.materia }}
+{% endblock content_header_title %}
+
+{% block content_header_subtitle %}{% endblock content_header_subtitle %}
+
+{% block content_body %}
+<div class="row">
+    <div class="col-xl-6 mb-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                Ordinario
+            </div>
+            <div class="card-body">
+                <div class="text-left">
+                    <p>
+                        <strong>Antecente:</strong>
+                        {% if object.antecedente != '' %}
+                            {{ object.antecendente|title }}
+                        {% else %}
+                            Sin descripción
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Materia:</strong>
+                        {{ obj.materia|title }}
+                    </p>
+                    <p>
+                        <strong>De:</strong>                        
+                        {{ object.description|title }}
+                    </p>
+                    <p>
+                        <strong>Cargo:</strong>
+                        {{ object.cargo|title }}
+                    </p>
+                    <p>
+                        <strong>A:</strong>
+                        {{ object.a|title }}
+                    </p>
+                    <p>
+                        <strong>Cargo:</strong>
+                        {% if object.cargo_a != '' %}
+                            {{ object.a|title }}
+                        {% else %}
+                            Sin descripción
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Cuerpo:</strong>
+                        {{ object.cuerpo|safe }}
+                    </p>
+                    <p>
+                        <strong>Adjunto:</strong>
+                        {% if object.adjunto != '' %}
+                            {{ object.adjunto }}
+                        {% else %}
+                            Sin descripción
+                        {% endif %}
+                    </p>
+                    <p>
+                        <strong>Servicio:</strong>
+                        {{ object.servicio }}                        
+                    </p>
+                    <p>
+                        <strong>Teléfono:</strong>
+                        {{ object.telefono }}                        
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center">
+                <a class="text-arrow-icon" href="{% url 'website:list_ordinarios' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left ms-0 me-1"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Volver
+                </a>
+
+                <button class="btn btn-success" type="button">Descargar Ordinario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content_body %}

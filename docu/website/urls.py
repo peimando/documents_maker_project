@@ -1,15 +1,24 @@
 from .apps import WebsiteConfig
 from django.urls import path
 from .views import (
-    index,
-    report
-    # Home
+    Home,
+    ListOrdinarios,
+    AddOrdinario,
+    EditOrdinario,
+    DetailOrdinario,
+    DeleteOrdinario,
+    DownloadDocument
 )
 
 app_name = WebsiteConfig.name
 
 urlpatterns = [
-    path('', index, name='home'),
-    path('generate_pdf/', report, name='report'),
-    # path('home', Home.as_view(), name='home1')
+    path('', Home.as_view(), name='home'),
+    path('ordinario/list', ListOrdinarios.as_view(), name='list_ordinarios'),
+    path('ordinario/add', AddOrdinario.as_view(), name='add_ordinario'),
+    path('ordinario/<slug:slug>/edit', EditOrdinario.as_view(), name='edit_ordinario'),
+    path('ordinario/<slug:slug>/detail', DetailOrdinario.as_view(), name='detail_ordinario'),
+    path('ordinario/<slug:slug>/delete', DeleteOrdinario.as_view(), name='delete_ordinario'),
+    path('ordinario/download', DownloadDocument.as_view(), name='download_document'),
+
 ]
