@@ -1,13 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.urls import reverse
 from django.utils.text import slugify
-
+from django.urls import reverse
 from common.utils.servicios_hls import ServiciosChoices
-
-from .distribucion import DistribucionExterna
-
-
 
 class Ordinario(models.Model):
 
@@ -41,12 +36,10 @@ class Ordinario(models.Model):
         max_length=50
     )
 
-    tipo_distribucion = models.BooleanField(
-        default=True,
-        choices=[
-            ('INT', 'Interna'),
-            ('EXT', 'Externa')
-        ]
+    tipo_distribucion = models.CharField(
+        null=True,
+        blank=True,
+        max_length=10
     )
     
     distribucion_interna = models.CharField(
@@ -68,6 +61,11 @@ class Ordinario(models.Model):
         default=ServiciosChoices.DIR
     )
 
+    telefono = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
     slug = models.SlugField(
         max_length=255,
         blank=True,
@@ -77,10 +75,14 @@ class Ordinario(models.Model):
     def __str__(self) -> str:
         return self.materia
     
-    # def get_absolute_url(self):
+    def get_absolute_url(self):
 
-    #     return reverse(
-    #         'website:create_document', kwargs={"slug": self.slug})
+        return reverse(
+            'website:detail_ordinario', 
+            kwargs={
+                'slug': self.slug
+            }
+        )
 
 
 def ordinario_post_save(sender, instance, created, *args, **kwargs):
