@@ -1,12 +1,13 @@
 from django import forms
-from django.forms import ModelForm
-from ordinario.models import Ordinario
 from common.utils.distribucion import TipoDistribucion
 from ckeditor.widgets import CKEditorWidget
 from common.utils.servicios_hls import ServiciosChoices
 
+from ordinario.models import Ordinario, DistribucionExterna
+from django.forms import inlineformset_factory
 
-class AddOrdinarioForm(ModelForm):
+
+class AddOrdinarioForm(forms.ModelForm):
 
     distribucion_interna = forms.MultipleChoiceField(
         label='Distribuciones Internas',
@@ -18,6 +19,13 @@ class AddOrdinarioForm(ModelForm):
         # help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
         required=False,
         choices=ServiciosChoices.SERVICIOS_CHOICES
+    )
+
+    tipo_distribucion = forms.MultipleChoiceField(
+        label='Tipo de Distribución',
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
+        choices=TipoDistribucion.DISTRIBUCION_CHOICES
     )
 
     class Meta:
@@ -33,10 +41,11 @@ class AddOrdinarioForm(ModelForm):
             'cargo_a',
             'cuerpo',
             'adjunto',
+            'servicio',
+            'telefono',
             'tipo_distribucion',
             'distribucion_interna',
             'distribucion_externa',
-            'servicio'
         ]
 
         labels = {
@@ -45,7 +54,8 @@ class AddOrdinarioForm(ModelForm):
             'cargo_a': 'Cargo',
             'tipo_distribucion': 'Tipo de distribución',
             'distribucion_interna': 'Distribuciones Internas',
-            'distribucion_externa': 'Distribución externa'
+            'distribucion_externa': 'Distribución externa',
+            'telefono': 'Teléfono',
         }
 
     def __init__(self, *args, **kwargs):
@@ -60,29 +70,45 @@ class AddOrdinarioForm(ModelForm):
             'cargo_a',
             'cuerpo',
             'adjunto',
-            'tipo_distribucion',
+            'servicio',
+            'telefono',
+            'distribucion_interna',
             'distribucion_externa',
-            'servicio'
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
-            
-            self.fields['de'].widget.attrs['placeholder'] = \
-                'Nombre de quién envía el ordinario.'
             
             if self.fields in (
                 'ant',
                 'cargo_de',
                 'cargo_a',
                 'adj',
-                'distribuciones_internas',
+                'distribucion_interna',
                 'distribucion_externa',
-                'direccion_distribucion_externa',
+                # 'direccion_distribucion_externa',
             ):
                 
                 self.fields[field_key].required = False
 
-            self.fields['cargo_de'].widget.attrs['placeholder'] = \
-                'Cargo de quién envía.'
+        self.fields['de'].widget.attrs['placeholder'] = \
+                'Nombre de quién envía el ordinario'
+            
+        self.fields['cargo_de'].widget.attrs['placeholder'] = \
+            'Cargo de quién envía'
+        
+        self.fields['a'].widget.attrs['placeholder'] = \
+            'Nombre hacia quién va dirigido el ordinario'
+        
+        self.fields['cargo_a'].widget.attrs['placeholder'] = \
+            'Cargo de la persona a quien se le envía el ordinario'
+        
+        self.fields['cuerpo'].widget = CKEditorWidget()
 
-            self.fields['cuerpo'].widget = CKEditorWidget()
+
+# OrdinarioFormSet = inlineformset_factory(
+#     Ordinario, DistribucionExterna,
+#     form=AddOrdinarioForm,
+#     extra=1,
+#     can_delete=True,
+#     can_delete_extra=True
+# )
