@@ -104,6 +104,22 @@ class AddOrdinarioForm(forms.ModelForm):
         
         self.fields['cuerpo'].widget = CKEditorWidget()
 
+    def clean_servicio(self):
+
+        servicio_name_value = self.cleaned_data['servicio']
+        servicio_name_value = dict(self.fields['servicio'].choices)[servicio_name_value]
+
+        return servicio_name_value
+    
+    def clean_distribucion_interna(self):
+
+        selected_choices = self.cleaned_data['distribucion_interna']
+        all_choices = dict(self.fields['distribucion_interna'].choices)
+
+        selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in selected_choices]
+
+        return list(selected_choices_values)
+
 
 # OrdinarioFormSet = inlineformset_factory(
 #     Ordinario, DistribucionExterna,
