@@ -16,26 +16,24 @@ class DownloadDocument(View):
 
     def post(self, request, *args, **kwargs):
 
-        print('POST: ', request.POST)
+        print(request.POST.get('antecedente'))
 
         data = {
-            'antecente': request.GET.get('antecente', ''),
-            'materia': request.GET.get('materia', ''),
-            'de': request.GET.get('de', ''),
-            'cargo_de': request.GET.get('cargo_de', ''),
-            'a': request.GET.get('a', ''),
-            'cargo_a': request.GET.get('cargo_a', ''),
-            'cuerpo': request.GET.get('cuerpo', ''),
-            'adjunto': request.GET.get('adjunto', ''),
-            'tipo_distribucion': request.GET.get('tipo_distribucion', ''),
-            'distribucion_interna': request.GET.getlist('distribucion_interna', []),
-            'distribucion_externa': request.GET.get('distribucion_externa', ''),
+            'antecente': request.POST.get('antecente', ''),
+            'materia': request.POST.get('materia', ''),
+            'de': request.POST.get('de', ''),
+            'cargo_de': request.POST.get('cargo_de', ''),
+            'a': request.POST.get('a', ''),
+            'cargo_a': request.POST.get('cargo_a', ''),
+            'cuerpo': request.POST.get('cuerpo', ''),
+            'adjunto': request.POST.get('adjunto', ''),
+            'tipo_distribucion': request.POST.get('tipo_distribucion', ''),
+            'distribucion_interna': request.POST.getlist('distribucion_interna', []),
+            'distribucion_externa': request.POST.get('distribucion_externa', ''),
             # 'direccion_distribucion_externa': request.GET.get('direccion_distribucion_externa', ''),
-            'servicio': request.GET.get('servicio', ''),
-            'telefono': request.GET.get('telefono', ''),
+            'servicio': request.POST.get('servicio', ''),
+            'telefono': request.POST.get('telefono', ''),
         }
-
-        print(data['de'])
 
         pdf = PDF(
             format='Letter',

@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Any, Dict
 from django.contrib import messages
-from django.views.generic import View, FormView, CreateView
+from django.http import HttpResponseRedirect
+from django.views.generic import CreateView
 from django.urls import reverse_lazy
 
 from website.forms import AddOrdinarioForm
@@ -23,46 +24,6 @@ class AddOrdinario(CreateView):
    
     def form_valid(self, form):
         
-        self.object = form.save(commit=False)
-
-        antecendente = form.cleaned_data['antecendente']
-        materia = form.cleaned_data['materia']
-        de = form.cleaned_data['de']
-        cargo_de = form.cleaned_data['cargo_de']
-        a = form.cleaned_data['a']
-        cargo_a = form.cleaned_data['cargo_a']
-        cuerpo = form.cleaned_data['cuerpo']
-        adjunto = form.cleaned_data['adjunto']
-        tipo_distribucion = form.cleaned_data['tipo_distribucion']
-        distribucion_interna = form.cleaned_data['distribucion_interna']
-        distribucion_externa = form.cleaned_data['distribucion_externa']
-        # direccion_distribucion_externa = form.cleaned_data['direccion_distribucion_externa']
-        servicio = form.cleaned_data['servicio']
-        servicio = dict(form.fields['servicio'].choices)[servicio]
-        telefono = form.cleaned_data['telefono']
-
-        selected_choices = distribucion_interna
-        choices = dict(form.fields['distribucion_interna'].choices)
-
-        selected_choices_values = [choices[selected_key] for selected_key in choices.keys() if selected_key in selected_choices]
-
-        self.form_data = {
-            'antecendente': antecendente,
-            'materia': materia,
-            'de': de,
-            'cargo_de': cargo_de,
-            'a': a,
-            'cargo_a': cargo_a,
-            'cuerpo': cuerpo,
-            'adjunto': adjunto,
-            'tipo_distribucion': tipo_distribucion,
-            'distribucion_interna': selected_choices_values,
-            'distribucion_externa': distribucion_externa,
-            # 'direccion_distribucion_externa': direccion_distribucion_externa,
-            'servicio': servicio,
-            'telefono': str(telefono)
-        }
-
         self.object = form.save()
 
         messages.add_message(
@@ -79,7 +40,7 @@ class AddOrdinario(CreateView):
         return reverse_lazy(
             'website:detail_ordinario',
             kwargs={
-                'slug': self.slug,
+                'slug': self.object.slug,
             }
         )
 

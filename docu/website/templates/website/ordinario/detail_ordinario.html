@@ -19,7 +19,7 @@
             </div>
             <div class="card-body text-left">
                 <div class="text-left">
-                    <p>
+                    <p id="antecedente">
                         <strong>Antecente:</strong>
                         {% if object.antecedente != '' %}
                             {{ object.antecendente|title }}
@@ -27,23 +27,23 @@
                             Sin descripción
                         {% endif %}
                     </p>
-                    <p>
+                    <p id="materia">
                         <strong>Materia:</strong>
                         {{ object.materia|title }}
                     </p>
-                    <p>
+                    <p id="de">
                         <strong>De:</strong>                        
                         {{ object.de|title }}
                     </p>
-                    <p>
+                    <p id="cargo_de">
                         <strong>Cargo:</strong>
                         {{ object.cargo_de|title }}
                     </p>
-                    <p>
+                    <p id="a">
                         <strong>A:</strong>
                         {{ object.a|title }}
                     </p>
-                    <p>
+                    <p id="cargo_a">
                         <strong>Cargo:</strong>
                         {% if object.cargo_a != '' %}
                             {{ object.a|title }}
@@ -51,11 +51,11 @@
                             Sin descripción
                         {% endif %}
                     </p>
-                    <p>
+                    <p id="cuerpo">
                         <strong>Cuerpo:</strong>
                         {{ object.cuerpo|safe }}
                     </p>
-                    <p>
+                    <p id="adjunto">
                         <strong>Adjunto:</strong>
                         {% if object.adjunto != '' %}
                             {{ object.adjunto }}
@@ -63,14 +63,30 @@
                             Sin descripción
                         {% endif %}
                     </p>
-                    <p>
+                    <p id="servicio">
                         <strong>Servicio:</strong>
                         {{ object.servicio }}                        
                     </p>
-                    <p>
+                    <p id="telefono">
                         <strong>Teléfono:</strong>
                         {{ object.telefono }}                        
                     </p>
+                    
+                    {% if object.tipo_distribucion == 'INT' %}
+                        <p id="distribuciones_internas">
+                            {{ object.distribucion_interna }}
+                        </p>
+                    {% endif %}
+                    
+                    {% if object.tipo_distribucion == 'EXT' %}
+                        <p id="distribuciones_externas">
+                            {{ object.distribucion_externa }}
+                        </p>
+                    {% endif %}
+
+
+
+                    
                 </div>
             </div>
             <div class="card-footer">
@@ -78,8 +94,8 @@
                     <i data-feather="arrow-left"></i>&nbsp;
                     Volver
                 </a>
-
-                <a href="#" class="btn btn-success" type="button" id="download_document">
+                
+                <a href="#" class="btn btn-success" type="button" id="download_document" targe="_blank">
                     <i data-feather="download"></i>&nbsp;
                     Descargar Ordinario
                 </a>
@@ -88,3 +104,55 @@
     
 
 {% endblock content_body %}
+
+{% block js %}
+{% comment %} <script src={% static 'website/js/get_ordinario_items.js' %}></script> {% endcomment %}
+
+<script>
+    let document_link = document.getElementById('download_document').addEventListener('click', download_file);
+
+    function download_file() {
+    
+        let document_url = "{% url 'website:download_document' object.slug %}"
+    
+        let antecedente = document.getElementById('antecedente').textContent;
+        let materia = document.getElementById('materia').textContent;
+        let de = document.getElementById('de').textContent;
+        let cargo_de = document.getElementById('cargo_de').textContent;
+        let a = document.getElementById('a').textContent;
+        let cargo_a = document.getElementById('cargo_a').textContent;
+        let cuerpo = document.getElementById('cuerpo').textContent;
+        let adjunto = document.getElementById('adjunto').textContent;
+        let tipo_distribucion = document.getElementById('tipo_distribucion').textContent;
+        let distribucion_interna = document.getElementById('distribucion_interna').textContent;
+    
+        data = {
+            'antecente': antecedente,
+            'materia': materia,
+            'de': de,
+            'cargo_de': cargo_de,
+            'a': a,
+            'cargo_a': cargo_a,
+            'cuerpo': cuerpo,
+            'adjunto': adjunto,
+            'tipo_distribucion': tipo_distribucion,
+            'distribucion_interna': distribucion_interna,
+            'distribucion_externa': distribucion_externa,
+            'servicio': servicio,
+            'telefono': telefono,
+        }
+    
+        fetch(document_url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+        .then(response => response.json())
+        .then(response => console.log(data));
+    
+    };
+
+</script>
+{% endblock js %}
