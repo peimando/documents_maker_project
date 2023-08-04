@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any, Dict
 from django.contrib import messages
 from django.views.generic import View, FormView, CreateView
 from django.urls import reverse_lazy
@@ -13,7 +14,12 @@ class AddOrdinario(CreateView):
 
     form_class = AddOrdinarioForm
 
-    template_name = 'website/add_ordinario.html'
+    template_name = 'website/ordinario/add_edit_ordinario.html'
+
+    extra_context = {
+        'title': 'Generar Ordinario',
+        'action': 'create'
+    }
    
     def form_valid(self, form):
         
