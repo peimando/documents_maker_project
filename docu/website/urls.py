@@ -19,6 +19,6 @@ urlpatterns = [
     path('ordinario/<slug:slug>/edit', EditOrdinario.as_view(), name='edit_ordinario'),
     path('ordinario/<slug:slug>/detail', DetailOrdinario.as_view(), name='detail_ordinario'),
     path('ordinario/<slug:slug>/delete', DeleteOrdinario.as_view(), name='delete_ordinario'),
-    path('ordinario/download', DownloadDocument.as_view(), name='download_document'),
+    path('ordinario/<slug:slug>/download', DownloadDocument.as_view(), name='download_document'),
 
 ]
