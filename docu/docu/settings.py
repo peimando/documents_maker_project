@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-
+from django.contrib.messages import constants as message_constants
 import dj_database_url
 import os
 from pathlib import Path
@@ -154,6 +154,16 @@ else:
         'HOST': os.environ.get('DATABASE_HOST'),
         'PORT': os.environ.get('DATABASE_PORT'),
     }
+
+# Django messages
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: 'alert-light',
+    message_constants.INFO: 'alert-primary',
+    message_constants.SUCCESS: 'alert-success',
+    message_constants.WARNING: 'alert-warning',
+    message_constants.ERROR: 'alert-danger',
+}
 
 
 # Password validation
