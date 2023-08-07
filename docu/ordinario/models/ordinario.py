@@ -36,14 +36,7 @@ class Ordinario(models.Model):
     adjunto = models.CharField(
         max_length=50
     )
-
-    tiene_distribucion_interna = models.BooleanField(
-        null=True,
-        blank=True,
-        default=True
-    )
     
-    # completarla solucion 
     distribuciones_internas_asociadas = models.JSONField(
         null=True,
         blank=True

@@ -21,13 +21,6 @@ class AddOrdinarioForm(forms.ModelForm):
         choices=ServiciosChoices.SERVICIOS_CHOICES
     )
 
-    # tipo_distribucion = forms.MultipleChoiceField(
-    #     label='Tipo de Distribución',
-    #     widget=forms.CheckboxSelectMultiple(),
-    #     required=False,
-    #     choices=TipoDistribucion.DISTRIBUCION_CHOICES
-    # )
-
     class Meta:
 
         model = Ordinario
@@ -43,18 +36,17 @@ class AddOrdinarioForm(forms.ModelForm):
             'adjunto',
             'servicio',
             'telefono',
-            # 'es_distribucion_interna',
-            # 'distribuciones_internas_asociadas',
-            # 'es_distribucion_externa',
-            # 'distribuciones_externas_asociadas',
+            'distribuciones_internas_asociadas',
+            'tiene_distribucion_externa',
+            'distribuciones_externas_asociadas',
         ]
 
         labels = {
             'antecendente': 'Antecedentes',
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
-            # 'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
-            # 'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
+            'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
+            'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
             'telefono': 'Teléfono',
         }
 
@@ -72,10 +64,9 @@ class AddOrdinarioForm(forms.ModelForm):
             'adjunto',
             'servicio',
             'telefono',
-            # 'es_distribucion_interna',
-            # 'distribuciones_internas_asociadas',
-            # 'es_distribucion_externa',
-            # 'distribuciones_externas_asociadas',
+            'distribuciones_internas_asociadas',
+            'tiene_distribucion_externa',
+            'distribuciones_externas_asociadas',
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
@@ -85,12 +76,11 @@ class AddOrdinarioForm(forms.ModelForm):
                 'cargo_de',
                 'cargo_a',
                 'adj',
-                # 'distribuciones_internas_asociadas',
-                # 'es_distribucion_externa',
-                # 'distribuciones_externas_asociadas',
+                'tiene_distribucion_externa',
+                'distribuciones_externas_asociadas',
             ):
                 
-                self.fields[field_key].required = False
+                self.fields[field_key].required = False   
 
         self.fields['de'].widget.attrs['placeholder'] = \
                 'Nombre de quién envía el ordinario'
@@ -106,7 +96,27 @@ class AddOrdinarioForm(forms.ModelForm):
         
         self.fields['cuerpo'].widget = CKEditorWidget()
 
-    # Validar si viene es_distribucion_interna, que haya seleccionado al menos un elemento de la lista
+        self.fields['tiene_distribucion_externa'] = forms.ChoiceField(
+            widget=forms.RadioSelect,
+            choices=[
+                (True, 'Sí'),
+                (False, 'NO')
+            ]
+        )
+
+    # Validar que la lista de distribuciones_internas no venga vacia
+    def clean_distribuciones_internas_asociadas(self):
+
+        data = self.cleaned_data['distribuciones_internas_asociadas']
+        all_choices = dict(self.fields['distribuciones_internas_asociadas'].choices)
+
+        selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in data]
+
+        if not data:
+
+            raise forms.ValidationError('La lista de campos no puede ser vacía.')
+
+        return selected_choices_values
 
     # Validar si viene es_distribucion_externa, que haya seleccionado al menos un elemento de la lista
 

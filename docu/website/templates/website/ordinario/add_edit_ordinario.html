@@ -80,4 +80,38 @@
 
 {% endblock content_body %}
 
-{% block js %}{% endblock js %}
+{% block js %}
+
+<script type='text/javascript'>
+
+    let radio_tiene_distribucion_externa = document.querySelectorAll('input[name="tiene_distribucion_externa"]');
+    let select_distribuciones_externas = document.getElementById('id_distribuciones_externas_asociadas');
+    let label_distribuciones_externas = document.querySelector("label[for='id_distribuciones_externas_asociadas']");
+
+    function showHideFormFields() {
+
+        label_distribuciones_externas.style.display = 'none';
+        select_distribuciones_externas.style.display = 'none';
+
+    }
+
+    radio_tiene_distribucion_externa.forEach(function(radioButton) {
+
+        radioButton.addEventListener('change', function() {
+            
+            var selectedValue = document.querySelector('input[name="tiene_distribucion_externa"]:checked').value;
+            
+            if (selectedValue == 'True') {
+
+                label_distribuciones_externas.style.display = 'block';
+                select_distribuciones_externas.style.display = 'block';
+            } else {
+                label_distribuciones_externas.style.display = 'none';
+                select_distribuciones_externas.style.display = 'none';
+            }  
+        });
+    });
+
+    window.onload = function() { showHideFormFields(); }
+</script>
+{% endblock js %}

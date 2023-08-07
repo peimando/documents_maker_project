@@ -7,16 +7,16 @@ class PDF(FPDF):
 
     def __init__(
         self,
-        ant,
-        mat,
+        antecedente,
+        materia,
         de,
         cargo_de,
         a,
         cargo_a,
-        adj,
-        tipo_distribucion,
-        distribuciones_internas,
-        distribuciones_externas,
+        adjunto,
+        distribuciones_internas_asociadas,
+        tiene_distribuciones_externas,
+        distribuciones_externas_asociadas,
         servicio,
         telefono,
         **kwargs
@@ -28,18 +28,18 @@ class PDF(FPDF):
         self.set_auto_page_break(auto=True, margin=25)
 
         # Header
-        self.ant = ant
-        self.mat = mat
+        self.ant = antecedente
+        self.mat = materia
 
         # Pre footer
         self.de = de
         self.cargo_de = cargo_de
         self.a = a
         self.cargo_a = cargo_a
-        self.adj = adj
-        self.tipo_distribucion = tipo_distribucion
-        self.distribuciones_internas = distribuciones_internas  # (list)
-        self.distribuciones_externas = distribuciones_externas  # (it would be a dictionary)
+        self.adj = adjunto
+        self.distribuciones_internas = distribuciones_internas_asociadas  # (list)
+        self.tiene_distribuciones_externas = tiene_distribuciones_externas
+        self.distribuciones_externas = distribuciones_externas_asociadas  # (it would be a dictionary)
 
         # Footer
         self._direccion = 'Balmaceda #916, La Serena, Chile'
@@ -372,40 +372,40 @@ class PDF(FPDF):
 
         self.set_font('Manrope-Regular', '', 7)
 
-        for tipo in self.tipo_distribucion:
+        if self.tiene_distribuciones_externas:
 
-            if tipo == 'EXT':
+            distribuciones_externas = [
+                {
+                    'descripcion': 'Jefe Laboratorio Regional PKU-HC',
+                    'direccion': 'Portales 3239, Edificio CDT, 3er Piso, Santiago Centro.'
+                }
+            ]
 
-                distribuciones_externas = [
-                    {
-                        'descripcion': 'Jefe Laboratorio Regional PKU-HC',
-                        'direccion': 'Portales 3239, Edificio CDT, 3er Piso, Santiago Centro.'
-                    }
-                ]
+            # obtener el diccionario
 
-                for distrib_ext in distribuciones_externas:
-                    
-                    for item in distrib_ext:
-
-                        self.cell(
-                            0,
-                            3,
-                            f"- {distrib_ext[item]}",
-                            border=False,
-                            ln=True
-                        )
-
-            if tipo == 'INT':
-
-                for distrib_int in self.distribuciones_internas:
+            for distrib_ext in distribuciones_externas:
+                
+                for item in distrib_ext:
 
                     self.cell(
                         0,
                         3,
-                        f"- {distrib_int}",
+                        f"- {distrib_ext[item]}",
                         border=False,
                         ln=True
                     )
+
+        if self.distribuciones_internas:
+
+            for distrib_int in self.distribuciones_internas:
+
+                self.cell(
+                    0,
+                    3,
+                    f"- {distrib_int}",
+                    border=False,
+                    ln=True
+                )
 
     # overriding footer
     def footer(self):
