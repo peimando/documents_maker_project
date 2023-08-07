@@ -72,12 +72,17 @@
                         {{ object.telefono }}                        
                     </p>
                     
-                    {% if object.tipo_distribucion == 'INT' %}
-                        <p id="distribuciones_internas">
-                            {{ object.distribucion_interna }}
-                        </p>
-                    {% endif %}
-                    
+                    <p id="distribucion_interna">
+                        <strong>Distribuciones internas:</strong>                 
+                    </p>
+
+                    <ul>
+                    {% for distribucion_interna in object.distribuciones_internas_asociadas %}
+                        <li>{{ distribucion_interna }}</li>
+                    {% endfor %}
+                    </ul>
+
+
                     {% if object.tipo_distribucion == 'EXT' %}
                         <p id="distribuciones_externas">
                             {{ object.distribucion_externa }}
