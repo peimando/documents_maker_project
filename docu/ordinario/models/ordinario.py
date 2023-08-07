@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from common.utils.servicios_hls import ServiciosChoices
 
+
 class Ordinario(models.Model):
 
     antecendente = models.CharField(
@@ -36,18 +37,25 @@ class Ordinario(models.Model):
         max_length=50
     )
 
-    tipo_distribucion = models.CharField(
+    tiene_distribucion_interna = models.BooleanField(
         null=True,
         blank=True,
-        max_length=10
+        default=True
     )
     
-    distribucion_interna = models.CharField(
+    # completarla solucion 
+    distribuciones_internas_asociadas = models.JSONField(
         null=True,
         blank=True
     )
 
-    distribucion_externa = models.ForeignKey(
+    tiene_distribucion_externa = models.BooleanField(
+        null=True,
+        blank=True,
+        default=False
+    )
+
+    distribuciones_externas_asociadas = models.ForeignKey(
         'DistribucionExterna',
         blank=True,
         null=True,
