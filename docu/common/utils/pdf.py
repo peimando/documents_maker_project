@@ -346,7 +346,9 @@ class PDF(FPDF):
         self.ln(5)
 
     def _generate_iniciales_de_responsabilidad(self, string_nombre):
-
+        
+        print(string_nombre)
+        
         output_str_lst = string_nombre.split(' ')
         output_lst = []
 
