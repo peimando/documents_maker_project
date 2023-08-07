@@ -3,7 +3,7 @@ from django.http import FileResponse
 from django.views.generic import View
 from common.utils.pdf import PDF
 from pathlib import Path
-
+from django.shortcuts import get_object_or_404
 from ordinario.models import Ordinario
 
 
@@ -14,18 +14,27 @@ class DownloadDocument(View):
 
     template_name = 'website/add_ordinario.html'
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
 
-        print(request.POST.get('antecedente'))
+        ordinario = get_object_or_404(Ordinario, slug=kwargs['slug'])
 
+        print(ordinario.antecendente)
+
+        # print(request.POST.get('antecedente'))
+
+        # Actualizar los campos en el PDF:
+        # - es_distribucion_interna 
+        # - distribuciones_internas_asociadas
+        # - es_distribucion_externa
+        # - distribuciones_externas_asociadas 
         data = {
-            'antecente': request.POST.get('antecente', ''),
-            'materia': request.POST.get('materia', ''),
-            'de': request.POST.get('de', ''),
-            'cargo_de': request.POST.get('cargo_de', ''),
-            'a': request.POST.get('a', ''),
-            'cargo_a': request.POST.get('cargo_a', ''),
-            'cuerpo': request.POST.get('cuerpo', ''),
+            'antecente': ordinario.antecendente,
+            'materia': ordinario.materia,
+            'de': ordinario.de,
+            'cargo_de': ordinario.cargo_de,
+            'a': ordinario.a,
+            'cargo_a': ordinario.cargo_a,
+            'cuerpo': ordinario.cuerpo,
             'adjunto': request.POST.get('adjunto', ''),
             'tipo_distribucion': request.POST.get('tipo_distribucion', ''),
             'distribucion_interna': request.POST.getlist('distribucion_interna', []),

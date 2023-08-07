@@ -9,7 +9,7 @@ from django.forms import inlineformset_factory
 
 class AddOrdinarioForm(forms.ModelForm):
 
-    distribucion_interna = forms.MultipleChoiceField(
+    distribuciones_internas_asociadas = forms.MultipleChoiceField(
         label='Distribuciones Internas',
         widget=forms.SelectMultiple(
             attrs={
@@ -21,12 +21,12 @@ class AddOrdinarioForm(forms.ModelForm):
         choices=ServiciosChoices.SERVICIOS_CHOICES
     )
 
-    tipo_distribucion = forms.MultipleChoiceField(
-        label='Tipo de Distribución',
-        widget=forms.CheckboxSelectMultiple(),
-        required=False,
-        choices=TipoDistribucion.DISTRIBUCION_CHOICES
-    )
+    # tipo_distribucion = forms.MultipleChoiceField(
+    #     label='Tipo de Distribución',
+    #     widget=forms.CheckboxSelectMultiple(),
+    #     required=False,
+    #     choices=TipoDistribucion.DISTRIBUCION_CHOICES
+    # )
 
     class Meta:
 
@@ -43,18 +43,18 @@ class AddOrdinarioForm(forms.ModelForm):
             'adjunto',
             'servicio',
             'telefono',
-            'tipo_distribucion',
-            'distribucion_interna',
-            'distribucion_externa',
+            # 'es_distribucion_interna',
+            # 'distribuciones_internas_asociadas',
+            # 'es_distribucion_externa',
+            # 'distribuciones_externas_asociadas',
         ]
 
         labels = {
             'antecendente': 'Antecedentes',
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
-            'tipo_distribucion': 'Tipo de distribución',
-            'distribucion_interna': 'Distribuciones Internas',
-            'distribucion_externa': 'Distribución externa',
+            # 'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
+            # 'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
             'telefono': 'Teléfono',
         }
 
@@ -72,8 +72,10 @@ class AddOrdinarioForm(forms.ModelForm):
             'adjunto',
             'servicio',
             'telefono',
-            'distribucion_interna',
-            'distribucion_externa',
+            # 'es_distribucion_interna',
+            # 'distribuciones_internas_asociadas',
+            # 'es_distribucion_externa',
+            # 'distribuciones_externas_asociadas',
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
@@ -83,9 +85,9 @@ class AddOrdinarioForm(forms.ModelForm):
                 'cargo_de',
                 'cargo_a',
                 'adj',
-                'distribucion_interna',
-                'distribucion_externa',
-                # 'direccion_distribucion_externa',
+                # 'distribuciones_internas_asociadas',
+                # 'es_distribucion_externa',
+                # 'distribuciones_externas_asociadas',
             ):
                 
                 self.fields[field_key].required = False
@@ -104,6 +106,10 @@ class AddOrdinarioForm(forms.ModelForm):
         
         self.fields['cuerpo'].widget = CKEditorWidget()
 
+    # Validar si viene es_distribucion_interna, que haya seleccionado al menos un elemento de la lista
+
+    # Validar si viene es_distribucion_externa, que haya seleccionado al menos un elemento de la lista
+
     def clean_servicio(self):
 
         servicio_name_value = self.cleaned_data['servicio']
@@ -113,13 +119,16 @@ class AddOrdinarioForm(forms.ModelForm):
     
     def clean_distribucion_interna(self):
 
-        selected_choices = self.cleaned_data['distribucion_interna']
-        all_choices = dict(self.fields['distribucion_interna'].choices)
+        # selected_choices = self.cleaned_data['distribucion_interna']
+        # all_choices = dict(self.fields['distribucion_interna'].choices)
 
-        selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in selected_choices]
+        # selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in selected_choices]
 
-        return list(selected_choices_values)
+        # return list(selected_choices_values)
+        pass
 
+
+# Completar formset
 
 # OrdinarioFormSet = inlineformset_factory(
 #     Ordinario, DistribucionExterna,
