@@ -1,0 +1,70 @@
+{% extends 'admin_website/base_admin_website.html' %}
+{% load static %}
+
+
+{% block content_body %}
+<div class="container-fluid px-4">
+    <div class="card {% block dt_card_class %}{% endblock dt_card_class %}">
+        {% block dt_card_class_header %}
+        {% endblock dt_card_class_header %}
+        {% block dt_card_filter %}
+        {% endblock dt_card_filter %}
+        <div class="card-body">
+            <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                {% block dt_top %}
+                <div class="dataTable-top">
+                </div>
+                {% endblock dt_top %}
+                <div class="dataTable-container">
+                    <table id="datatablesSimple" class="dataTable-table">
+                        <thead>
+                            {% block dt_thead %}
+                            {% endblock dt_thead %}
+                        </thead>
+                        <tbody>
+                            {% block dt_tbody %}
+                            {% endblock dt_tbody %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="dataTable-bottom">
+                    {% block dt_bottom %}
+                        {% if is_paginated %}
+                    <div class="dataTable-info">Mostrando {{ paginator.page_result }} de {{ paginator.total_result }} Resultados.</div>
+                    <nav class="dataTable-pagination">
+                        <ul class="dataTable-pagination-list">
+                            {% if page_obj.has_previous %}
+                            <li class="pager">
+                                <a href="?page={{ page_obj.previous_page_number }}&{{ params }}">‹</a>
+                            </li>
+                            {% endif %}
+                            {% if 1 < paginator.min_page %}
+                            <li class="pager">
+                                <a href="?page=1&{{ params }}"> 1 ... </a>
+                            </li>
+                            {% endif %}
+                            {% for i in paginator.custom_page_range %}
+                            <li class="{% if page_obj.number == i %} active {% else %} pager {% endif %}">
+                                <a href="?page={{ i }}&{{ params }}">{{ i }}</a>
+                            </li>
+                            {% endfor %}
+                            {% if paginator.max_page < paginator.num_pages %}
+                            <li class="pager">
+                                <a href="?page={{ paginator.num_pages }}&{{ params }}"> ... {{paginator.num_pages}} </a>
+                            </li>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                            <li class="pager">
+                                <a href="?page={{ page_obj.next_page_number }}&{{ params }}">›</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                        {% endif %}
+                    {% endblock dt_bottom %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content_body %}

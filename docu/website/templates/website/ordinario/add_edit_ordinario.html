@@ -1,0 +1,83 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block head_title %} {{ title }} {% endblock head_title %}
+
+{% block css %}
+<style>
+    .django-ckeditor-widget {
+        width: 100%;
+    }
+
+    .helptext {
+        
+    }
+</style>
+{% endblock css %}
+
+{% block url_name %}website:add_ordinario{% endblock url_name %}
+
+{% block content_header_title %}
+    {% if action == 'create' %}
+    <div class="page-header-icon"><i data-feather="plus"></i></div>
+    Agregar Ordinario
+    {% else %}
+    <div class="page-header-icon"><i data-feather="edit"></i></div>
+    Editar Ordinario
+    {% endif %}
+{% endblock content_header_title %}
+
+{% block content_header_subtitle %}
+    {% if action == 'create' %}
+    {% else %}
+        {{ object.materia }}
+    {% endif %}
+{% endblock content_header_subtitle %}
+
+{% block content_header_extra %}{% endblock content_header_extra %}
+
+{% block content_body %}
+
+    {% if action == 'create' %}
+    <div id="default">
+        <div class="card mb-4">
+            <div class="card-header">Genere su documento</div>
+            <form action="" method="POST" id="formAddOrdinario">
+                <div class="card-body">   
+                    <!-- Component Preview-->
+                    <div class="sbp-preview">
+                        <div class="sbp-preview-content">
+
+                            {% csrf_token %}
+                            {{ form.media }}
+                            {{ form }}  
+                            <br>
+                    </div>
+                    <div class="sbp-preview-text text-left">
+                        <a href="{% url 'website:list_ordinarios' %}" class="btn btn-outline-dark" type="button">                       
+                            <i data-feather="arrow-left"></i>
+                            Volver
+                        </a>
+                        <button type="submit" class="btn btn-primary me-2 my-1" id="AddOrdinario">Guardar</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div> 
+    {% elif action == 'edit' %}
+    <form action="" method="POST" id='formEditOrdinario'>
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form }}
+        <br>
+        <div class="modal-footer">
+            <a class="btn btn-light" type="button" href="{% url 'website:list_ordinarios' %}">Volver</a>
+            <button class="btn btn-primary" type="submit" id="btnEditOrdinario">Guardar</button>
+        </div>
+    </form>
+    {% endif %}
+
+{% endblock content_body %}
+
+{% block js %}{% endblock js %}

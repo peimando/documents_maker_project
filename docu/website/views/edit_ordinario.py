@@ -5,7 +5,7 @@ from website.forms import AddOrdinarioForm
 
 class EditOrdinario(UpdateView):
 
-    template_name = 'website/add_ordinario.html'
+    template_name = 'website/ordinario/add_edit_ordinario.html'
 
     model = Ordinario
 

@@ -3,12 +3,15 @@ from ordinario.models import Ordinario
 
 class ListOrdinarios(ListView):
 
-    template_name = 'website/list_ordinario.html'
+    template_name = 'website/ordinario/list_ordinario.html'
 
     queryset = Ordinario.objects.all()
 
     ordering = '-id'
     
+    extra_context = {
+        'title': 'Lista de Ordinarios'
+    }
 
 
 
