@@ -167,3 +167,6 @@ media_cdn
 
 # Redis backup
 dump.rdb
+
+# PDF directory
+documentos/

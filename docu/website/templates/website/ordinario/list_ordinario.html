@@ -1,0 +1,50 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block css %}{% endblock css %}
+
+{% block url_name %}website:list_ordinarios{% endblock url_name %}
+
+{% block head_title %} {{ title }} {% endblock head_title %}
+
+{% block content_header_title %}
+    <div class="page-header-icon"><i data-feather="list"></i></div>
+    Lista de Ordinarios
+{% endblock content_header_title %}
+
+{% block content_body %}
+
+<div class="card card-header-actions mx-auto mb-4">
+    <div class="card-header">
+        Lista
+        <div>
+            <a href="{% url 'website:add_ordinario' %}" class="btn btn-blue btn-icon">
+                <i data-feather="plus"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body text-left" >
+        {% if object_list %}
+        <ul>
+            <div class="card-body text-left">
+                {% for ordinario in object_list %}
+                    <li>
+                        <a href="{{ ordinario.get_absolute_url }}">
+                            {{ ordinario.materia }}
+                        </a>
+                    </li>    
+                {% endfor %}
+            </div>
+        </ul>
+        {% else %}
+        <div class="alert alert-primary" role="alert">
+            Nada que mostrar. Para crear un ordinario, haz clic aquí <br />
+            <a class="btn btn-primary" role="button" href="{% url 'website:add_ordinario' %}">Crear ordinario.</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content_body %}
+
+{% block js %}{% endblock js %}

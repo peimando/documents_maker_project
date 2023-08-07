@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.urls import reverse
 from django.utils.text import slugify
-from .distribucion import DistribucionExterna
+from django.urls import reverse
+from common.utils.servicios_hls import ServiciosChoices
 
 
 class Ordinario(models.Model):
@@ -36,22 +36,35 @@ class Ordinario(models.Model):
     adjunto = models.CharField(
         max_length=50
     )
-
-    tipo_distribucion = models.BooleanField(
-        default=True,
-        choices=[
-            ('INT', 'Interna'),
-            ('EXT', 'Externa')
-        ]
-    )
     
-    # distribucion_interna = models.
+    distribuciones_internas_asociadas = models.JSONField(
+        null=True,
+        blank=True
+    )
 
-    distribucion_externa = models.ForeignKey(
+    tiene_distribucion_externa = models.BooleanField(
+        null=True,
+        blank=True,
+        default=False
+    )
+
+    distribuciones_externas_asociadas = models.ForeignKey(
         'DistribucionExterna',
         blank=True,
         null=True,
         on_delete=models.SET_NULL
+    )
+
+    servicio = models.CharField(
+        null=True,
+        blank=True,
+        choices=ServiciosChoices.SERVICIOS_CHOICES,
+        default=ServiciosChoices.DIR
+    )
+
+    telefono = models.PositiveIntegerField(
+        null=True,
+        blank=True
     )
 
     slug = models.SlugField(
@@ -63,10 +76,14 @@ class Ordinario(models.Model):
     def __str__(self) -> str:
         return self.materia
     
-    # def get_absolute_url(self):
+    def get_absolute_url(self):
 
-    #     return reverse(
-    #         'website:create_document', kwargs={"slug": self.slug})
+        return reverse(
+            'website:detail_ordinario', 
+            kwargs={
+                'slug': self.slug
+            }
+        )
 
 
 def ordinario_post_save(sender, instance, created, *args, **kwargs):

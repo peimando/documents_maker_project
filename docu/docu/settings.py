@@ -74,6 +74,7 @@ PROJECT_APPS = [
 
     # Model apps
     'ordinario',
+    'servicio',
 
     # Admin website apps
 

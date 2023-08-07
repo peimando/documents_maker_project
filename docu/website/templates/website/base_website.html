@@ -6,9 +6,9 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="RamPlus" />
-        <meta name="author" content="RamPlus" />
-        <title>{% block head_title %}{% endblock head_title %}</title>
+        <meta name="description" content="Docu" />
+        <meta name="author" content="Gabriela Barrera Angel" />
+        <title>Docu - {% block head_title %}{% endblock head_title %}</title>
         <link href="{% static 'website/css/bs/styles.css' %}" rel="stylesheet" />
         <link rel="icon" type="image/x-icon" href="{% static 'website/img/favicon-32x32.png' %}" />
         <script data-search-pseudo-elements src="{% static 'website/js/bs/all.min.js' %}"></script>
@@ -160,6 +160,7 @@
                         </div>
                     </header>
                     {% endblock content_header %}
+                    
                     <!-- Main page content-->
                     <div class="container-xl px-4 mt-n10">
                         {% block django_messages %}
@@ -171,6 +172,7 @@
                                 {% endfor %}
                             {% endif %}
                         {% endblock django_messages %}
+
                         {% block content_body %}
                         {% endblock content_body %}
                     </div>

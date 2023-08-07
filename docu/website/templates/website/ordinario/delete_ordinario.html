@@ -1,0 +1,29 @@
+{% extends 'website/base_website.html' %}
+{% load static %}
+
+{% block head_title %}{{ title }}{% endblock head_title %}
+
+{% block content_header_title %}
+    <div class="page-header-icon"><i data-feather="activity"></i></div> Eliminar ordinario
+{% endblock content_header_title %}
+
+{% block content_header_subtitle %}{% endblock content_header_subtitle %}
+
+{% block content_header_extra %}{% endblock content_header_extra %}
+
+{% block content_body %}
+<div class="card mb-4">
+    <div class="card-header">Eliminar ordinario</div>
+    <div class="card-body text-left">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h2>Quieres eliminar el ordinario: <strong>{{ object.materia }}</strong>?</h2>
+            <br>
+            <div class="modal-footer">
+                <a class="btn btn-primary mt-3" type="button" href="{% url 'website:list_ordinarios' %}">Volver</a>
+                <input class="btn btn-danger mt-3" type="submit" value="Eliminar">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content_body %}

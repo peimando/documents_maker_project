@@ -2,8 +2,13 @@
 Servicios o Unidades del HLS
 """
 
+#@ Convertir esta clase a modelo para poder agregar servicios y cambiar a ForeignKey
+# Servicios y Distribuciones Internas
+
 
 class ServiciosChoices(object):
+
+    DIR = 'Dirección'
 
     SERVICIOS_CHOICES = [
         ('ASENF', 'Asenf'),
@@ -25,7 +30,7 @@ class ServiciosChoices(object):
         ('CPARI', 'Comité Paritario'),
         ('DCSP', 'Departamento de Calidad y Seguridad del Paciente'),
         ('DPCDI', 'Departamento de Planificación, Control y Desarrollo Institucional'),
-        ('DIR', 'Dirección'),
+        (DIR, 'Dirección'),
         ('FENATS', 'Fenats'),
         ('FENPRUSS', 'Fenpruss'),
         ('HSMP', 'Hogar de Salud Mental Protegido'),
