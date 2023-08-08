@@ -1,10 +1,8 @@
 from django import forms
-from common.utils.distribucion import TipoDistribucion
 from ckeditor.widgets import CKEditorWidget
 from common.utils.servicios_hls import ServiciosChoices
 
-from ordinario.models import Ordinario, DistribucionExterna
-from django.forms import inlineformset_factory
+from ordinario.models import Ordinario
 
 
 class AddOrdinarioForm(forms.ModelForm):
@@ -38,7 +36,7 @@ class AddOrdinarioForm(forms.ModelForm):
             'telefono',
             'distribuciones_internas_asociadas',
             'tiene_distribucion_externa',
-            'distribuciones_externas_asociadas',
+            # 'distribuciones_externas_asociadas',
         ]
 
         labels = {
@@ -46,7 +44,7 @@ class AddOrdinarioForm(forms.ModelForm):
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
             'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
-            'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
+            # 'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
             'telefono': 'Teléfono',
         }
 
@@ -66,7 +64,7 @@ class AddOrdinarioForm(forms.ModelForm):
             'telefono',
             'distribuciones_internas_asociadas',
             'tiene_distribucion_externa',
-            'distribuciones_externas_asociadas',
+            # 'distribuciones_externas_asociadas',
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
@@ -127,23 +125,3 @@ class AddOrdinarioForm(forms.ModelForm):
 
         return servicio_name_value
     
-    def clean_distribucion_interna(self):
-
-        # selected_choices = self.cleaned_data['distribucion_interna']
-        # all_choices = dict(self.fields['distribucion_interna'].choices)
-
-        # selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in selected_choices]
-
-        # return list(selected_choices_values)
-        pass
-
-
-# Completar formset
-
-# OrdinarioFormSet = inlineformset_factory(
-#     Ordinario, DistribucionExterna,
-#     form=AddOrdinarioForm,
-#     extra=1,
-#     can_delete=True,
-#     can_delete_extra=True
-# )

@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     Home,
     ListOrdinarios,
-    AddOrdinario,
+    AddOrdinario, AddOrdinarioInline,
     EditOrdinario,
     DetailOrdinario,
     DeleteOrdinario,
@@ -20,5 +20,5 @@ urlpatterns = [
     path('ordinario/<slug:slug>/detail', DetailOrdinario.as_view(), name='detail_ordinario'),
     path('ordinario/<slug:slug>/delete', DeleteOrdinario.as_view(), name='delete_ordinario'),
     path('ordinario/<slug:slug>/download', DownloadDocument.as_view(), name='download_document'),
-
+    path('ordinario/add1', AddOrdinarioInline.as_view(), name='add_ordinario_inline')
 ]

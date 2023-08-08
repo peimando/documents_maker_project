@@ -48,12 +48,12 @@ class Ordinario(models.Model):
         default=False
     )
 
-    distribuciones_externas_asociadas = models.ForeignKey(
-        'DistribucionExterna',
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL
-    )
+    # distribuciones_externas_asociadas = models.ForeignKey(
+    #     'DistribucionExterna',
+    #     blank=True,
+    #     null=True,
+    #     on_delete=models.SET_NULL
+    # )
 
     servicio = models.CharField(
         null=True,

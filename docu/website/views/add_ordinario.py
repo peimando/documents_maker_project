@@ -1,12 +1,10 @@
-from datetime import datetime
-from typing import Any, Dict
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
-from django.urls import reverse_lazy
 
-from website.forms import AddOrdinarioForm
 from ordinario.models import Ordinario
+from website.forms import AddOrdinarioForm, OrdinarioFormSet
 
 
 class AddOrdinario(CreateView):
@@ -43,56 +41,65 @@ class AddOrdinario(CreateView):
                 'slug': self.object.slug,
             }
         )
+    
 
-# class OrdinarioInline():
+class AddOrdinarioInline(CreateView):
 
-#     form_class = AddOrdinarioForm
+    form_class = AddOrdinarioForm
 
-#     model = Ordinario
+    template_name = 'website/ordinario/add_edit_ordinario_inline.html'
 
-#     template_name = 'website/add_ordinario.html'
+    def get_context_data(self, **kwargs):
+ 
+        context = super(AddOrdinarioInline, self).get_context_data(**kwargs)
+        context['ordinario_distribucion_externa_formset'] = OrdinarioFormSet()
+        context['title'] = f'Generar Ordinario (Inline)'
+        context['action'] = 'create'
+ 
+        return context
 
-#     def form_valid(self, form):
+    def post(self, request, *args, **kwargs):
 
-#         named_formsets = self.get_named_formsets()
+        self.object = None
 
-#         if not all((f.is_valid() for f in named_formsets.values())):
+        form_class = self.get_form_class()
 
-#             return self.render_to_response(self.get_context_data(form=form))
+        form = self.get_form()
 
-#         self.object = form.save()
+        ordinario_distribucion_externa_formset = OrdinarioFormSet(self.request.POST)
 
-#         # for every formset, attempt to find a specific formset save function
-#         # otherwise, just save.
-#         for name, formset in named_formsets.items():
+        print(ordinario_distribucion_externa_formset)
 
-#             formset_save_func = getattr(self, 'formset_{0}_valid'.format(name), None)
+        if form.is_valid() and ordinario_distribucion_externa_formset.is_valid():
+
+            return self.form_valid(form, ordinario_distribucion_externa_formset)
+        
+        else:
             
-#             if formset_save_func is not None:
-            
-#                 formset_save_func(formset)
-            
-#             else:
-            
-#                 formset.save()
+            return self.form_invalid(form, ordinario_distribucion_externa_formset)
         
-#         return redirect('website:home')
+    def form_valid(self, form, ordinario_distribucion_externa_formset):
 
-#     def formset_ordinario_valid(self, formset):
+        self.object = form.save(commit=False)
 
-#         """
-#         Hook for custom formset saving.Useful if you have multiple formsets
-#         """
-#         variants = formset.save(commit=False)  # self.save_formset(formset, contact)
-#         # add this 2 lines, if you have can_delete=True parameter 
-#         # set in inlineformset_factory func
-        
-#         for obj in formset.deleted_objects:
-        
-#             obj.delete()
-        
-#         for variant in variants:
-        
-#             variant.ordinario = self.object
-        
-#             variant.save()
+        self.object.save()
+
+        # Saving DistribucionesExternas Instance
+        distribuciones_externas = ordinario_distribucion_externa_formset.save(commit=False)
+
+        for distribucion_externa in distribuciones_externas:
+
+            distribucion_externa.ordinario = self.object
+
+            distribucion_externa.save()
+
+        return redirect('website:list_ordinarios')
+
+    def form_invalid(self, form, ordinario_distribucion_externa_formset):
+
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                ordinario_distribucion_externa_formset= ordinario_distribucion_externa_formset
+            )
+        )

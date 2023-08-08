@@ -1,12 +1,10 @@
 from django.forms import inlineformset_factory
 from ordinario.models import Ordinario, DistribucionExterna
-from website.forms import AddOrdinarioForm
+from website.forms import AddDistribucionExterna
 
 
 OrdinarioFormSet = inlineformset_factory(
-    Ordinario, DistribucionExterna,
-    form=AddOrdinarioForm,
-    extra=1,
-    can_delete=True,
-    can_delete_extra=True
+    Ordinario,  DistribucionExterna,
+    form=AddDistribucionExterna,
+    fields=['descripcion', 'direccion']
 )
