@@ -25,17 +25,70 @@
     </div>
     <div class="card-body text-left" >
         {% if object_list %}
-        <ul>
-            <div class="card-body text-left">
-                {% for ordinario in object_list %}
-                    <li>
-                        <a href="{{ ordinario.get_absolute_url }}">
-                            {{ ordinario.materia }}
-                        </a>
-                    </li>    
-                {% endfor %}
-            </div>
-        </ul>
+
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Materia</th>
+                <th scope="col">servicio</th>
+
+                <th style="width: 10%">
+                    Editar
+                </th>
+                <th style="width: 5%">
+                    Descargar
+                </th>
+                <th style="width: 5%">
+                    Eliminar
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+            {% for ordinario in object_list %}
+              <tr>
+                <th scope="row">{{ ordinario.id }}</th>
+                <td>{{ ordinario.materia }}</td> 
+                <td>{{ ordinario.servicio }}</td>
+                <td>
+                    <div style="vertical-align: middle;text-align: center;">
+                        <p>
+                            <a href="{{ ordinario.get_absolute_url }}" data-toggle="tooltip" data-placement="top" title="Ver Detalle">
+                                <i data-feather="eye"></i>
+                            </a>
+                        </p>
+                        <p>
+                            <a href="{% url 'website:edit_ordinario' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Editar activo">
+                                <i data-feather="edit-3"></i>
+                            </a>
+                        </p>
+                    </div>
+                </td>
+                <td>
+                    <div style="vertical-align: middle;text-align: center;">
+                        <p>
+                            <a href="{% url 'website:download_document' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Descargar PDF">
+                                <i data-feather="download"></i>
+                            </a>
+                        </p>
+                    </div>
+                </td>
+                <td>
+                    <div style="vertical-align: middle;text-align: center;">
+                        <p>
+                            <a href="{% url 'website:delete_ordinario' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Eliminar Ordinario">
+                                <i data-feather="trash-2"></i>
+                            </a>
+                        </p>
+                    </div>
+                </td>
+
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+    
         {% else %}
         <div class="alert alert-primary" role="alert">
             Nada que mostrar. Para crear un ordinario, haz clic aquí <br />
