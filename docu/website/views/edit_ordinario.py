@@ -12,6 +12,7 @@ class EditOrdinario(UpdateView):
     form_class = AddOrdinarioForm
 
     extra_content = {
+        'title': 'Generar Ordinario',
         'action': 'edit'
     }
 

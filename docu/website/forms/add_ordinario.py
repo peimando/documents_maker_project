@@ -14,7 +14,7 @@ class AddOrdinarioForm(forms.ModelForm):
                 'class': 'form-control'
             }
         ),
-        # help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
+        help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
         required=False,
         choices=ServiciosChoices.SERVICIOS_CHOICES
     )

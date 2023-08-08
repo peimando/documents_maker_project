@@ -1,7 +1,14 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block head_title %} {{ title }} {% endblock head_title %}
+{% block head_title %}
+    {% if action == 'create' %}
+        Generar Ordinario
+    {% elif action == 'edit' %}
+        Editar Ordinario
+    {% endif %}
+
+{% endblock head_title %}
 
 {% block css %}
 <style>
