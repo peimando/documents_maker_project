@@ -7,18 +7,18 @@ class PDF(FPDF):
 
     def __init__(
         self,
-        antecedente,
-        materia,
-        de,
-        cargo_de,
-        a,
-        cargo_a,
-        adjunto,
-        distribuciones_internas_asociadas,
-        tiene_distribuciones_externas,
-        distribuciones_externas_asociadas,
-        servicio,
-        telefono,
+        antecedente='',
+        materia='',
+        de='',
+        cargo_de='',
+        a='',
+        cargo_a='',
+        adjunto='',
+        distribuciones_internas_asociadas=[],
+        tiene_distribuciones_externas=False,
+        distribuciones_externas_asociadas=[],
+        servicio='',
+        telefono=None,
         **kwargs
     ):
         super(PDF, self).__init__(**kwargs)
@@ -327,37 +327,52 @@ class PDF(FPDF):
         self.cell(
             0,
             3,
-            f'{self._iniciales_responsabilidad_director_hls}/{arf}/',
+            f'{self._iniciales_responsabilidad_director_hls}/{arf}',
             border=False,
             ln=True
         )
 
-        self.cell(
-            self.get_string_width('Adj:'),
-            3,
-            f'Adj: {self.adj}',
-            border=False,
-            ln=True
-        )
+        if self.adj:
+
+            self.cell(
+                self.get_string_width('Adj:'),
+                3,
+                f'Adj: {self.adj}',
+                border=False,
+                ln=True
+            )
+
+        else:
+            self.cell(
+                self.get_string_width('Adj:'),
+                3,
+                f'Adj: No hay.',
+                border=False,
+                ln=True
+            )
 
         # DISTRIBUCIÓN
         self._generar_distribuciones()
 
         self.ln(5)
 
-    def _generate_iniciales_de_responsabilidad(self, string_nombre):
+    def _generate_iniciales_de_responsabilidad(self, nombre_completo=''):
+
+        palabras_a_eliminar = ["Sr.", "Sra.", "SR.", "SRA."]
+        nombre_limpio = nombre_completo
+
+        for palabra in palabras_a_eliminar:
+
+            nombre_limpio = nombre_limpio.replace(palabra, "").strip()
+
+        iniciales = "".join([word[0].capitalize() for word in nombre_limpio.split()])
+    
+
+        if iniciales == 'LIMC':
+            
+            return ''
         
-        print(string_nombre)
-        
-        output_str_lst = string_nombre.split(' ')
-        output_lst = []
-
-        for letra in output_str_lst:
-
-            primera_letra = letra[0]
-            output_lst.append(primera_letra)
-
-        return ''.join(output_lst)
+        return iniciales
 
     def _generar_distribuciones(self):
 
