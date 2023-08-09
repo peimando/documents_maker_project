@@ -29,7 +29,7 @@ class DownloadDocument(View):
             adjunto=ordinario.adjunto,
             distribuciones_internas_asociadas=ordinario.distribuciones_internas_asociadas,
             tiene_distribuciones_externas=ordinario.tiene_distribucion_externa,
-            distribuciones_externas_asociadas=ordinario.distribuciones_externas_asociadas,  # dict of distribuciones externas
+            # distribuciones_externas_asociadas=ordinario.distribuciones_externas_asociadas,  # dict of distribuciones externas
             servicio=ordinario.servicio,
             telefono=str(ordinario.telefono),
         )
@@ -62,15 +62,3 @@ class DownloadDocument(View):
             as_attachment=True,  # False => if I don't want to download
             content_type='application/pdf'
         )
-
-
-# class DownloadDocument(View):
-
-#     template_name = 'website/add_ordinario.html'
-
-#     def get(self, request, *args, **kwargs):
-
-#         ordinario_slug = kwargs['slug']
-#         ordinario_obj = Ordinario.objects.get(slug=ordinario_slug)
-
-#         print(ordinario_obj)

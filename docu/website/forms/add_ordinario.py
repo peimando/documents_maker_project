@@ -24,7 +24,7 @@ class AddOrdinarioForm(forms.ModelForm):
         model = Ordinario
 
         fields = [
-            'antecendente',
+            'antecedente',
             'materia',
             'de',
             'cargo_de',
@@ -40,7 +40,7 @@ class AddOrdinarioForm(forms.ModelForm):
         ]
 
         labels = {
-            'antecendente': 'Antecedentes',
+            'antecedente': 'Antecedentes',
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
             'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
@@ -52,7 +52,7 @@ class AddOrdinarioForm(forms.ModelForm):
         super(AddOrdinarioForm, self).__init__(*args, **kwargs)
 
         for field_key in [
-            'antecendente',
+            'antecedente',
             'materia',
             'de',
             'cargo_de',
@@ -70,10 +70,10 @@ class AddOrdinarioForm(forms.ModelForm):
                 'form-control'
             
             if self.fields in (
-                'ant',
+                'antecedente',
                 'cargo_de',
                 'cargo_a',
-                'adj',
+                'adjunto',
                 'tiene_distribucion_externa',
                 'distribuciones_externas_asociadas',
             ):
@@ -92,13 +92,19 @@ class AddOrdinarioForm(forms.ModelForm):
         self.fields['cargo_a'].widget.attrs['placeholder'] = \
             'Cargo de la persona a quien se le envía el ordinario'
         
+        self.fields['telefono'].widget.attrs['placeholder'] = \
+                'Número teléfonico del servicio que envía el ordinario'
+        
+        self.fields['adjunto'].widget.attrs['placeholder'] = \
+                'Cantidad de adjuntos que se enviarán'
+
         self.fields['cuerpo'].widget = CKEditorWidget()
 
         self.fields['tiene_distribucion_externa'] = forms.ChoiceField(
-            widget=forms.RadioSelect,
+            widget=forms.RadioSelect(),
             choices=[
                 (True, 'Sí'),
-                (False, 'NO')
+                (False, 'No')
             ]
         )
 

@@ -6,5 +6,7 @@ from website.forms import AddDistribucionExterna
 OrdinarioFormSet = inlineformset_factory(
     Ordinario,  DistribucionExterna,
     form=AddDistribucionExterna,
-    fields=['descripcion', 'direccion']
+    fields=['descripcion', 'direccion'],
+    extra=1,
+    can_delete=True
 )

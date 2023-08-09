@@ -26,4 +26,5 @@ class AddDistribucionExterna(forms.ModelForm):
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
 
+            self.fields[field_key].required = False
     

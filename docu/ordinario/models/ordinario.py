@@ -7,8 +7,10 @@ from common.utils.servicios_hls import ServiciosChoices
 
 class Ordinario(models.Model):
 
-    antecendente = models.CharField(
-        max_length=100
+    antecedente = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
     )
 
     materia = models.CharField(
@@ -28,13 +30,15 @@ class Ordinario(models.Model):
     )
 
     cargo_a = models.CharField(
-        max_length=300
+        max_length=300,
     )
 
     cuerpo = models.TextField()
 
     adjunto = models.CharField(
-        max_length=50
+        max_length=50,
+        null=True,
+        blank=True
     )
     
     distribuciones_internas_asociadas = models.JSONField(
@@ -48,12 +52,13 @@ class Ordinario(models.Model):
         default=False
     )
 
-    # distribuciones_externas_asociadas = models.ForeignKey(
-    #     'DistribucionExterna',
-    #     blank=True,
-    #     null=True,
-    #     on_delete=models.SET_NULL
-    # )
+    distribuciones_externas_asociadas = models.ForeignKey(
+        'DistribucionExterna',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='distribuciones_externas'
+    )
 
     servicio = models.CharField(
         null=True,

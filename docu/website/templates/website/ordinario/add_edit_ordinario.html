@@ -1,14 +1,7 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
 
-{% block head_title %}
-    {% if action == 'create' %}
-        Generar Ordinario
-    {% elif action == 'edit' %}
-        Editar Ordinario
-    {% endif %}
-
-{% endblock head_title %}
+{% block head_title %} {{ title }} {% endblock head_title %}
 
 {% block css %}
 <style>
@@ -49,27 +42,109 @@
     <div id="default">
         <div class="card mb-4">
             <div class="card-header">Genere su documento</div>
+
             <form action="" method="POST" id="formAddOrdinario">
-                <div class="card-body">   
+                <div class="card-body">
+
                     <!-- Component Preview-->
                     <div class="sbp-preview">
                         <div class="sbp-preview-content">
-
+                            
                             {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                                <ul>
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% for hidden_field in form.hidden_fields %}
+                                {% if hidden_field.errors %}
+                                <ul>
+                                    {% for error in hidden_field.errors %}
+                                    <li>(Hidden field {{ hidden_field.name }}) {{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                {{ hidden_field }}
+                            {% endfor %}
+
+                            <!-- CKEditor TextArea -->
                             {{ form.media }}
-                            {{ form }}  
-                            <br>
-                    </div>
-                    <div class="sbp-preview-text text-left">
+
+                            <!-- Ordinario Form -->
+                            {% for field in form %}
+                                <div class="form-group mb-3">
+                                    {{ field.label_tag}}
+
+                                    {% if field.field.required %}
+                                        <span style="color: red;" class="required">*</span>
+                                    {% endif %}
+                                    
+                                    {{ field }}
+                                    
+                                    {% if field.help_text %}
+                                        <small style="color: grey" class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+
+                                    {% for error in field.errors %}
+                                        <p style="color: red">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    <br>
+
+                    <div class="sbp-preview-text d-flex justify-content-between">
                         <a href="{% url 'website:list_ordinarios' %}" class="btn btn-outline-dark" type="button">                       
-                            <i data-feather="arrow-left"></i>
+                            <i data-feather="arrow-left"></i>&nbsp;
                             Volver
                         </a>
-                        <button type="submit" class="btn btn-primary me-2 my-1" id="AddOrdinario">Guardar</button>
+
+                        <button type="submit" class="btn btn-primary" id="AddOrdinario">
+                            <i data-feather="save"></i>&nbsp;
+                            Guardar
+                        </button>
                     </div>
                 </div>
             </form>
+
+            <div id="btnContainer">
+                <button class="btn btn-primary" onclick="addDistribucionExterna()" id="btnAddDistribucionExterna">
+                    <i data-feather="plus"></i>
+                    Agregar
+                </button>
             </div>
+
+            <div id="formDistribucionesExternasContent" class="card-body">
+                
+{% comment %} 
+                {{ ordinario_distribucion_externa_formset.non_form_errors }} {% endcomment %}
+
+                {{ ordinario_distribucion_externa_formset.management_form }}
+                
+                {% for form in ordinario_distribucion_externa_formset%}
+
+                {{ form }}
+                <hr>
+                
+                {% endfor %}
+        
+                {% comment %} {% for form in ordinario_distribucion_externa_formset %}
+
+                    {{ form }} 
+                        
+                    {% if ordinario_distribucion_externa_formset.can_delete %}
+                        {{ form.DELETE }}
+                    {% endif %}
+                    </div>
+                {% endfor %} {% endcomment %}
+        
+            </div>
+
         </div>
     </div> 
     {% elif action == 'edit' %}
@@ -92,15 +167,10 @@
 <script type='text/javascript'>
 
     let radio_tiene_distribucion_externa = document.querySelectorAll('input[name="tiene_distribucion_externa"]');
-    let select_distribuciones_externas = document.getElementById('id_distribuciones_externas_asociadas');
-    let label_distribuciones_externas = document.querySelector("label[for='id_distribuciones_externas_asociadas']");
+    let div_formset_distribuciones_externas = document.querySelector('#formDistribucionesExternasContent');
 
-    function showHideFormFields() {
-
-        label_distribuciones_externas.style.display = 'none';
-        select_distribuciones_externas.style.display = 'none';
-
-    }
+    let btnContainer = document.getElementById('btnContainer');
+    
 
     radio_tiene_distribucion_externa.forEach(function(radioButton) {
 
@@ -110,15 +180,44 @@
             
             if (selectedValue == 'True') {
 
-                label_distribuciones_externas.style.display = 'block';
-                select_distribuciones_externas.style.display = 'block';
+                div_formset_distribuciones_externas.style.display = 'block';
+                btnContainer.style.display = 'block';
+
             } else {
-                label_distribuciones_externas.style.display = 'none';
-                select_distribuciones_externas.style.display = 'none';
+                div_formset_distribuciones_externas.style.display = 'none';
+                btnContainer.style.display = 'none';
             }  
         });
     });
 
-    window.onload = function() { showHideFormFields(); }
+    window.onload = function() { 
+
+        div_formset_distribuciones_externas.style.display = 'none';
+        btnContainer.style.display = 'none';
+
+    }
+
+    function addDistribucionExterna(e) {
+
+        e.preventDefault();
+
+        var total_forms = document.querySelector('#id_distribucionexterna_set-TOTAL_FORMS');
+
+        var inputDescripcion = document.querySelector('#id_distribucionexterna_set-0-descripcion').cloneNode(true);
+
+        inputDescripcion.name = 'distribucionexterna_set-' + total_forms.value + '-descripcion';
+        inputDescripcion.id = 'id_distribucionexterna_set-' + total_forms.value + '-descripcion';
+
+        var inputDireccion = document.querySelector('#id_distribucionexterna_set-0-direccion').cloneNode(true);
+
+        inputDireccion.name = 'distribucionexterna_set-' + total_forms.value + '-direccion';
+        inputDireccion.id = 'id_distribucionexterna_set-'+ total_forms.value + '-direccion';
+
+        document.querySelector('#formDistribucionesExternasContent').appendChild(inputDescripcion);
+        document.querySelector('#formDistribucionesExternasContent').appendChild(inputDireccion);
+
+        total_forms.value = parseInt(total_forms.value) + 1;
+    }
+
 </script>
 {% endblock js %}

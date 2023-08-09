@@ -9,51 +9,15 @@ from website.forms import AddOrdinarioForm, OrdinarioFormSet
 
 class AddOrdinario(CreateView):
 
-    models = Ordinario
-
     form_class = AddOrdinarioForm
 
     template_name = 'website/ordinario/add_edit_ordinario.html'
 
-    extra_context = {
-        'title': 'Generar Ordinario',
-        'action': 'create'
-    }
-   
-    def form_valid(self, form):
-        
-        self.object = form.save()
-
-        messages.add_message(
-            self.request,
-            messages.SUCCESS,
-            f"El ordinario '{self.object.materia}'\
-                se ha generado correctamente."
-        )
-
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        
-        return reverse_lazy(
-            'website:detail_ordinario',
-            kwargs={
-                'slug': self.object.slug,
-            }
-        )
-    
-
-class AddOrdinarioInline(CreateView):
-
-    form_class = AddOrdinarioForm
-
-    template_name = 'website/ordinario/add_edit_ordinario_inline.html'
-
     def get_context_data(self, **kwargs):
  
-        context = super(AddOrdinarioInline, self).get_context_data(**kwargs)
+        context = super(AddOrdinario, self).get_context_data(**kwargs)
         context['ordinario_distribucion_externa_formset'] = OrdinarioFormSet()
-        context['title'] = f'Generar Ordinario (Inline)'
+        context['title'] = f'Generar Ordinario'
         context['action'] = 'create'
  
         return context
@@ -68,8 +32,6 @@ class AddOrdinarioInline(CreateView):
 
         ordinario_distribucion_externa_formset = OrdinarioFormSet(self.request.POST)
 
-        print(ordinario_distribucion_externa_formset)
-
         if form.is_valid() and ordinario_distribucion_externa_formset.is_valid():
 
             return self.form_valid(form, ordinario_distribucion_externa_formset)
@@ -82,8 +44,6 @@ class AddOrdinarioInline(CreateView):
 
         self.object = form.save(commit=False)
 
-        self.object.save()
-
         # Saving DistribucionesExternas Instance
         distribuciones_externas = ordinario_distribucion_externa_formset.save(commit=False)
 
@@ -91,9 +51,21 @@ class AddOrdinarioInline(CreateView):
 
             distribucion_externa.ordinario = self.object
 
+            distribucion_externa.save(commit=False)
+
+            # 
+
             distribucion_externa.save()
 
-        return redirect('website:list_ordinarios')
+        self.object.save()
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            f"El ordinario '{self.object.materia}' se ha generado correctamente."
+        )
+
+        return super().form_valid(form)
 
     def form_invalid(self, form, ordinario_distribucion_externa_formset):
 
@@ -102,4 +74,13 @@ class AddOrdinarioInline(CreateView):
                 form=form,
                 ordinario_distribucion_externa_formset= ordinario_distribucion_externa_formset
             )
+        )
+    
+    def get_success_url(self) -> str:
+        
+        return reverse_lazy(
+            'website:detail_ordinario',
+            kwargs={
+                'slug': self.object.slug,
+            }
         )
