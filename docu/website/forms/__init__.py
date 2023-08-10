@@ -1,3 +1,3 @@
 from .add_ordinario import AddOrdinarioForm
 from .add_distribucion_externa import AddDistribucionExterna
-from .ordinario_formset import OrdinarioFormSet
+from .distribucion_externa_formset import DistribucionExternaFormSet

@@ -36,7 +36,6 @@ class AddOrdinarioForm(forms.ModelForm):
             'telefono',
             'distribuciones_internas_asociadas',
             'tiene_distribucion_externa',
-            # 'distribuciones_externas_asociadas',
         ]
 
         labels = {
@@ -44,11 +43,11 @@ class AddOrdinarioForm(forms.ModelForm):
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
             'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
-            # 'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
             'telefono': 'Teléfono',
         }
 
     def __init__(self, *args, **kwargs):
+
         super(AddOrdinarioForm, self).__init__(*args, **kwargs)
 
         for field_key in [
@@ -64,7 +63,6 @@ class AddOrdinarioForm(forms.ModelForm):
             'telefono',
             'distribuciones_internas_asociadas',
             'tiene_distribucion_externa',
-            # 'distribuciones_externas_asociadas',
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
@@ -74,8 +72,7 @@ class AddOrdinarioForm(forms.ModelForm):
                 'cargo_de',
                 'cargo_a',
                 'adjunto',
-                'tiene_distribucion_externa',
-                'distribuciones_externas_asociadas',
+                'tiene_distribucion_externa'
             ):
                 
                 self.fields[field_key].required = False   
@@ -85,6 +82,8 @@ class AddOrdinarioForm(forms.ModelForm):
             
         self.fields['cargo_de'].widget.attrs['placeholder'] = \
             'Cargo de quién envía'
+        
+        self.fields['cargo_a'].required = False
         
         self.fields['a'].widget.attrs['placeholder'] = \
             'Nombre hacia quién va dirigido el ordinario'
@@ -124,10 +123,10 @@ class AddOrdinarioForm(forms.ModelForm):
 
     # Validar si viene es_distribucion_externa, que haya seleccionado al menos un elemento de la lista
 
-    def clean_servicio(self):
+    # def clean_servicio(self):
 
-        servicio_name_value = self.cleaned_data['servicio']
-        servicio_name_value = dict(self.fields['servicio'].choices)[servicio_name_value]
+    #     servicio_name_value = self.cleaned_data['servicio']
+    #     servicio_name_value = dict(self.fields['servicio'].choices)[servicio_name_value]
 
-        return servicio_name_value
+    #     return servicio_name_value
     

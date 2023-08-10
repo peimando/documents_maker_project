@@ -16,4 +16,4 @@ class DistribucionExterna(models.Model):
     )
 
     def __str__(self) -> str:
-        return f'{self.descripcion} - {self.direccion}'
+        return f'{self.ordinario.id}-{self.ordinario.materia}: {self.descripcion} - {self.direccion}'

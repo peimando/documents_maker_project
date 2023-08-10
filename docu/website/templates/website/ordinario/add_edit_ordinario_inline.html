@@ -38,7 +38,6 @@
 
 {% block content_body %}
 
-    {% if action == 'create' %}
     <div id="default">
         <div class="card mb-4">
             <div class="card-header">Genere su documento</div>
@@ -102,29 +101,18 @@
 
                                 {{ formset.management_form }}
 
-                                <script type="text/html" id="distExterna-template">   // id="inlineformsetname-template"
-                                    <tr id="images-__prefix__" class= hide_all>  // id="inlineformsetname-__prefix__"
-                                        {% for fields in formset.empty_form.hidden_fields %}
-                                            {{ fields }}
-                                        {% endfor %}
-                                    
-                                        {% for fields in formset.empty_form.visible_fields %}
-                                            <td>{{fields}}</td>
-                                        {% endfor %}
-                                    </tr>
-                                </script>
-
+                    
                                 <div class="table-responsive card mt-4">
                                     <div class="card-header card-header-secondary">
                                         <h4 class="card-title">Agregar Distribuciones Externas</h4>
                                     </div>
-                                    <table class="table card-body">
-                                        <thead class="text-secondary">
+                                    <table class="table card-header">
+                                        <thead class="text-primary">
                                             <th>Descripción <span style="color: red;" class="required">*</span></th>
-                                            <th>Dirección</th>
+                                            <th>Dirección<span style="color: red;" class="required">*</span></th>
                                             <th>Eliminar?</th>
+                                            <th></th>
                                         </thead>
-
                                         <tbody id="item-distribExterna">  <!-- id="item-inlineformsetname" -->
                                             <!-- formset non forms errors -->
                                             {% for error in formset.non_form_errors %}
@@ -132,11 +120,8 @@
                                             {% endfor %}
 
                                             {% for formss in formset %}
-
                                                 {{ formss.management_form }}
-
-                                                <tr id="id_distribucionexterna_set-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
-                                                    
+                                                <tr id="distribuciones_externas-{{ forloop.counter0 }}" class=hide_all>  <!-- id="inlineformsetname-counter" -->
                                                     {{ formss.id }}
                                                     
                                                     {% for field in formss.visible_fields %}
@@ -149,27 +134,32 @@
                                                     {% endfor %}
 
                                                     <!-- delete code -->
-                                                    {% if formss.instance.pk %}
+                                                    {% if formss.instance.id %}
                                                         <td>
-                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
-                                                                Delete
+                                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal{{formss.instance.id}}">
+                                                                Eliminar
                                                             </button>
 
                                                             <!-- Modal -->
-                                                            <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                                            <div class="modal fade" id="modal{{formss.instance.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{formss.instance.id}}" aria-hidden="true">
                                                                 <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Está seguro que quiere quitar esta Distribucion Externa?</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="modalLabel{{formss.instance.id}}">¿Está seguro que quiere eliminar esta distribución?</h5>
+                                                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                            <p><strong>Descripción: </strong> {{ formss.instance.descripcion }}</p>
+                                                                            <p><strong>Dirección: </strong>{{ formss.instance.direccion }}</p>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+
+                                                                            <a href="{% url 'website:delete_distribucion_externa' formss.instance.pk %}" type="button" class="btn btn-danger">Sí, eliminar</a>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="modal-footer">
-                                                                        <a href="{% url 'products:delete_image' formss.instance.pk %}" type="button" class="btn btn-primary">Sí, eliminar.</a>
-                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                                                    </div>
-                                                                </div>
                                                                 </div>
                                                             </div>
                                                         </td>            
@@ -178,10 +168,27 @@
                                             {% endfor %}
                                         </tbody>
                                     </table>
-                                    <a href="#" id="btnAddDistribucionExterna" class="btn btn-secondary add-distribucion-externa"><i data-feather="plus"></i>Add More</a> <!-- id="add-inlineformsetname-button" -->
+
+                                    <script type="text/html" id="distExterna-template">  // id="inlineformsetname-template"
+                                        // id='inlineformsetname-__prefix__' 
+                                        <tr id="distribuciones_externas-__prefix__" class= hide_all>
+                                            {% for fields in formset.empty_form.hidden_fields %}
+                                                {{ fields }}
+                                            {% endfor %}
+                                        
+                                            {% for fields in formset.empty_form.visible_fields %}
+                                                <td>{{fields}}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    </script>
+                                    
                                 </div>
-                            
-                            {% endwith %}
+                                <br>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a href="#" id="add-variant-button" class="btn btn-orange add-distribucion-externa">Agregar Distribución Externa</a> <!-- id="add-inlineformsetname-button" -->
+                                </div>
+                                <br>
+                                {% endwith %}
                         
                             <!-- Actions -->
                             <div class="sbp-preview-text d-flex justify-content-between">
@@ -201,77 +208,24 @@
             </form>
         </div>
     </div> 
-    {% elif action == 'edit' %}
-    <form action="" method="POST" id='formEditOrdinario'>
-        {% csrf_token %}
-        {{ form.media }}
-        {{ form }}
-        <br>
-        <div class="modal-footer">
-            <a class="btn btn-light" type="button" href="{% url 'website:list_ordinarios' %}">Volver</a>
-            <button class="btn btn-primary" type="submit" id="btnEditOrdinario">Guardar</button>
-        </div>
-    </form>
-    {% endif %}
-
 {% endblock content_body %}
 
 {% block js %}
 
 <script type='text/javascript'>
-
-    let radio_tiene_distribucion_externa = document.querySelectorAll('input[name="tiene_distribucion_externa"]');
-    let div_formset_distribuciones_externas = document.querySelector('#formDistribucionesExternasContent');
-
-    let btnContainer = document.getElementById('btnContainer');
-    
-
-    radio_tiene_distribucion_externa.forEach(function(radioButton) {
-
-        radioButton.addEventListener('change', function() {
-            
-            var selectedValue = document.querySelector('input[name="tiene_distribucion_externa"]:checked').value;
-            
-            if (selectedValue == 'True') {
-
-                div_formset_distribuciones_externas.style.display = 'block';
-                btnContainer.style.display = 'block';
-
-            } else {
-                div_formset_distribuciones_externas.style.display = 'none';
-                btnContainer.style.display = 'none';
-            }  
+ 
+    $(document).ready(function() {
+        // when user clicks add distribucion externa btn of distribuciones externas
+        $('.add-distribucion-externa').click(function(ev) {
+              ev.preventDefault();
+              var count = $('#item-distribExterna').children().length;
+              var tmplMarkup = $('#distExterna-template').html();
+              var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+              $('#item-distribExterna').append(compiledTmpl);
+      
+              // update form count
+              $('#id_distribuciones_externas-TOTAL_FORMS').attr('value', count+1);
         });
     });
-
-    window.onload = function() { 
-
-        div_formset_distribuciones_externas.style.display = 'none';
-        btnContainer.style.display = 'none';
-
-    }
-
-    function addDistribucionExterna(e) {
-
-        e.preventDefault();
-
-        var total_forms = document.querySelector('#id_distribucionexterna_set-TOTAL_FORMS');
-
-        var inputDescripcion = document.querySelector('#id_distribucionexterna_set-0-descripcion').cloneNode(true);
-
-        inputDescripcion.name = 'distribucionexterna_set-' + total_forms.value + '-descripcion';
-        inputDescripcion.id = 'id_distribucionexterna_set-' + total_forms.value + '-descripcion';
-
-        var inputDireccion = document.querySelector('#id_distribucionexterna_set-0-direccion').cloneNode(true);
-
-        inputDireccion.name = 'distribucionexterna_set-' + total_forms.value + '-direccion';
-        inputDireccion.id = 'id_distribucionexterna_set-'+ total_forms.value + '-direccion';
-
-        document.querySelector('#formDistribucionesExternasContent').appendChild(inputDescripcion);
-        document.querySelector('#formDistribucionesExternasContent').appendChild(inputDireccion);
-
-        total_forms.value = parseInt(total_forms.value) + 1;
-    }
-
 </script>
 {% endblock js %}

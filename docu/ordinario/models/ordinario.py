@@ -31,6 +31,8 @@ class Ordinario(models.Model):
 
     cargo_a = models.CharField(
         max_length=300,
+        blank=True,
+        null=True
     )
 
     cuerpo = models.TextField()
@@ -50,14 +52,6 @@ class Ordinario(models.Model):
         null=True,
         blank=True,
         default=False
-    )
-
-    distribuciones_externas_asociadas = models.ForeignKey(
-        'DistribucionExterna',
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='distribuciones_externas'
     )
 
     servicio = models.CharField(

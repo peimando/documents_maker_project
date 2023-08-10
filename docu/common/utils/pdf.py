@@ -389,26 +389,15 @@ class PDF(FPDF):
 
         if self.tiene_distribuciones_externas:
 
-            distribuciones_externas = [
-                {
-                    'descripcion': 'Jefe Laboratorio Regional PKU-HC',
-                    'direccion': 'Portales 3239, Edificio CDT, 3er Piso, Santiago Centro.'
-                }
-            ]
+            for distrib_ext in self.distribuciones_externas:
 
-            # obtener el diccionario
-
-            for distrib_ext in distribuciones_externas:
-                
-                for item in distrib_ext:
-
-                    self.cell(
-                        0,
-                        3,
-                        f"- {distrib_ext[item]}",
-                        border=False,
-                        ln=True
-                    )
+                self.cell(
+                    0,
+                    3,
+                    f"- {distrib_ext['descripcion']}, {distrib_ext['direccion']}",
+                    border=False,
+                    ln=True
+                )
 
         if self.distribuciones_internas:
 
