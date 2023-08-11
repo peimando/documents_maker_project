@@ -66,6 +66,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'ckeditor',
     'corsheaders',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 PROJECT_APPS = [
@@ -278,3 +280,9 @@ CKEDITOR_CONFIGS = {
         'tabSpaces': 8
     },
 }
+
+# New settings for Crispy Forms 2.0
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
