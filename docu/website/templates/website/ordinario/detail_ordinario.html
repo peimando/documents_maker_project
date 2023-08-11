@@ -1,5 +1,7 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
+{% load get_servicio_value %}
+
 
 {% block head_title %} {{ title }} {% endblock head_title %}
 
@@ -65,7 +67,7 @@
                     </p>
                     <p id="servicio">
                         <strong>Servicio:</strong>
-                        {{ object.servicio }}                        
+                        {{ object.servicio|get_servicio_value }}                        
                     </p>
                     <p id="telefono">
                         <strong>Teléfono:</strong>

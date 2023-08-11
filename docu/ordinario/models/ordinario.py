@@ -84,6 +84,9 @@ class Ordinario(models.Model):
             }
         )
 
+    def get_servicio_value(self, key):
+
+        return dict(self.SERVICIOS_CHOICES)[key]
 
 def ordinario_post_save(sender, instance, created, *args, **kwargs):
     if created or instance.slug in [None, ""]:

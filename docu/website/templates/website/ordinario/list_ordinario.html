@@ -1,5 +1,6 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
+{% load get_servicio_value %}
 
 {% block css %}{% endblock css %}
 
@@ -36,7 +37,7 @@
                 <th scope="col">servicio</th>
 
                 <th style="width: 10%">
-                    Editar
+                    Ver/Editar
                 </th>
                 <th style="width: 5%">
                     Descargar
@@ -52,7 +53,7 @@
               <tr>
                 <th scope="row">{{ ordinario.id }}</th>
                 <td>{{ ordinario.materia }}</td> 
-                <td>{{ ordinario.servicio }}</td>
+                <td>{{ ordinario.servicio|get_servicio_value }}</td>
                 <td>
                     <div style="vertical-align: middle;text-align: center;">
                         <p>
