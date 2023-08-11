@@ -26,78 +26,85 @@
         </div>
         {% endif %}
     </div>
-    <div class="card-body text-left" >
+    <div class="card-body" >
         {% if object_list %}
 
-        <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Materia</th>
-                <th scope="col">servicio</th>
+        <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-column">
+            <div class="datatable-top"></div>
+            
+            <div class="datatable-container">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Materia</th>
+                        <th scope="col">Servicio</th>
+        
+                        <th style="width: 10%">
+                            Ver/Editar
+                        </th>
+                        <th style="width: 5%">
+                            Descargar
+                        </th>
+                        <th style="width: 5%">
+                            Eliminar
+                        </th>
+                      </tr>
+                    </thead>
+        
+                    <tbody>
+                    {% for ordinario in object_list %}
+                      <tr>
+                        <th scope="row">{{ ordinario.id }}</th>
+                        <td>{{ ordinario.materia }}</td> 
+                        <td>{{ ordinario.servicio|get_servicio_value }}</td>
+                        <td>
+                            <div style="vertical-align: middle;text-align: center;">
+                                
+                                <a href="{{ ordinario.get_absolute_url }}" data-toggle="tooltip" data-placement="top" title="Ver Detalle" class="btn btn-datatable btn-icon btn-transparent-dark me-2">
+                                    <i data-feather="eye"></i>
+                                </a>
+                            
+                                <a href="{% url 'website:edit_ordinario' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Editar ordinario" class="btn btn-datatable btn-icon btn-transparent-dark">
+                                    <i data-feather="edit-3"></i>
+                                </a>
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <div style="vertical-align: middle;text-align: center;">
+                                <a href="{% url 'website:download_document' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Descargar PDF" class="btn btn-datatable btn-icon btn-transparent-dark">
+                                <i data-feather="download"></i></a>
+                            
+                            </div>
+                        </td>
+                        <td>
+                            <div style="vertical-align: middle;text-align: center;">
 
-                <th style="width: 10%">
-                    Ver/Editar
-                </th>
-                <th style="width: 5%">
-                    Descargar
-                </th>
-                <th style="width: 5%">
-                    Eliminar
-                </th>
-              </tr>
-            </thead>
+                                <a href="{% url 'website:delete_ordinario' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Eliminar Ordinario" class="btn btn-datatable btn-icon btn-transparent-dark">
+                                        <i data-feather="trash-2"></i>
+                                </a>
+                            </div>
+        
+                        </td>
+        
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+            </div>
 
-            <tbody>
-            {% for ordinario in object_list %}
-              <tr>
-                <th scope="row">{{ ordinario.id }}</th>
-                <td>{{ ordinario.materia }}</td> 
-                <td>{{ ordinario.servicio|get_servicio_value }}</td>
-                <td>
-                    <div style="vertical-align: middle;text-align: center;">
-                        <p>
-                            <a href="{{ ordinario.get_absolute_url }}" data-toggle="tooltip" data-placement="top" title="Ver Detalle">
-                                <i data-feather="eye"></i>
-                            </a>
-                        </p>
-                        <p>
-                            <a href="{% url 'website:edit_ordinario' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Editar ordinario">
-                                <i data-feather="edit-3"></i>
-                            </a>
-                        </p>
-                    </div>
-                </td>
-                <td>
-                    <div style="vertical-align: middle;text-align: center;">
-                        <p>
-                            <a href="{% url 'website:download_document' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Descargar PDF">
-                                <i data-feather="download"></i>
-                            </a>
-                        </p>
-                    </div>
-                </td>
-                <td>
-                    <div style="vertical-align: middle;text-align: center;">
-                        <p>
-                            <a href="{% url 'website:delete_ordinario' ordinario.slug %}" data-toggle="tooltip" data-placement="top" title="Eliminar Ordinario">
-                                <i data-feather="trash-2"></i>
-                            </a>
-                        </p>
-                    </div>
-                </td>
-
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
+            <div class="datatable-bottom"></div>
+        </div>
     
         {% else %}
+
         <div class="alert alert-primary" role="alert">
             Nada que mostrar. Para crear un ordinario, haz clic aquí:
             <br><br>
             <a class="btn btn-primary" role="button" href="{% url 'website:add_ordinario' %}">Generar ordinario</a>
         </div>
+        
         {% endif %}
     </div>
 
