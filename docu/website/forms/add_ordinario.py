@@ -1,31 +1,21 @@
 from django import forms
-from common.utils.distribucion import TipoDistribucion
 from ckeditor.widgets import CKEditorWidget
 from common.utils.servicios_hls import ServiciosChoices
-
-from ordinario.models import Ordinario, DistribucionExterna
-from django.forms import inlineformset_factory
+from ordinario.models import Ordinario
 
 
 class AddOrdinarioForm(forms.ModelForm):
 
-    distribucion_interna = forms.MultipleChoiceField(
+    distribuciones_internas_asociadas = forms.MultipleChoiceField(
         label='Distribuciones Internas',
         widget=forms.SelectMultiple(
             attrs={
                 'class': 'form-control'
             }
         ),
-        # help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
+        help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
         required=False,
         choices=ServiciosChoices.SERVICIOS_CHOICES
-    )
-
-    tipo_distribucion = forms.MultipleChoiceField(
-        label='Tipo de Distribución',
-        widget=forms.CheckboxSelectMultiple(),
-        required=False,
-        choices=TipoDistribucion.DISTRIBUCION_CHOICES
     )
 
     class Meta:
@@ -33,7 +23,7 @@ class AddOrdinarioForm(forms.ModelForm):
         model = Ordinario
 
         fields = [
-            'antecendente',
+            'antecedente',
             'materia',
             'de',
             'cargo_de',
@@ -43,26 +33,24 @@ class AddOrdinarioForm(forms.ModelForm):
             'adjunto',
             'servicio',
             'telefono',
-            'tipo_distribucion',
-            'distribucion_interna',
-            'distribucion_externa',
+            'distribuciones_internas_asociadas',
+            'tiene_distribucion_externa',
         ]
 
         labels = {
-            'antecendente': 'Antecedentes',
+            'antecedente': 'Antecedentes',
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
-            'tipo_distribucion': 'Tipo de distribución',
-            'distribucion_interna': 'Distribuciones Internas',
-            'distribucion_externa': 'Distribución externa',
+            'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
             'telefono': 'Teléfono',
         }
 
     def __init__(self, *args, **kwargs):
+
         super(AddOrdinarioForm, self).__init__(*args, **kwargs)
 
         for field_key in [
-            'antecendente',
+            'antecedente',
             'materia',
             'de',
             'cargo_de',
@@ -72,23 +60,21 @@ class AddOrdinarioForm(forms.ModelForm):
             'adjunto',
             'servicio',
             'telefono',
-            'distribucion_interna',
-            'distribucion_externa',
+            'distribuciones_internas_asociadas',
+            'tiene_distribucion_externa',
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
             
             if self.fields in (
-                'ant',
+                'antecedente',
                 'cargo_de',
                 'cargo_a',
-                'adj',
-                'distribucion_interna',
-                'distribucion_externa',
-                # 'direccion_distribucion_externa',
+                'adjunto',
+                'tiene_distribucion_externa'
             ):
                 
-                self.fields[field_key].required = False
+                self.fields[field_key].required = False   
 
         self.fields['de'].widget.attrs['placeholder'] = \
                 'Nombre de quién envía el ordinario'
@@ -96,35 +82,42 @@ class AddOrdinarioForm(forms.ModelForm):
         self.fields['cargo_de'].widget.attrs['placeholder'] = \
             'Cargo de quién envía'
         
+        self.fields['cargo_a'].required = False
+        
         self.fields['a'].widget.attrs['placeholder'] = \
             'Nombre hacia quién va dirigido el ordinario'
         
         self.fields['cargo_a'].widget.attrs['placeholder'] = \
             'Cargo de la persona a quien se le envía el ordinario'
         
+        self.fields['telefono'].widget.attrs['placeholder'] = \
+                'Número teléfonico del servicio que envía el ordinario'
+        
+        self.fields['adjunto'].widget.attrs['placeholder'] = \
+                'Cantidad de adjuntos que se enviarán'
+
         self.fields['cuerpo'].widget = CKEditorWidget()
 
-    def clean_servicio(self):
+        self.fields['tiene_distribucion_externa'] = forms.ChoiceField(
+            widget=forms.RadioSelect(),
+            choices=[
+                (True, 'Sí'),
+                (False, 'No')
+            ]
+        )
 
-        servicio_name_value = self.cleaned_data['servicio']
-        servicio_name_value = dict(self.fields['servicio'].choices)[servicio_name_value]
+    # Validar que la lista de distribuciones_internas no venga vacia
+    def clean_distribuciones_internas_asociadas(self):
 
-        return servicio_name_value
-    
-    def clean_distribucion_interna(self):
+        data = self.cleaned_data['distribuciones_internas_asociadas']
+        all_choices = dict(self.fields['distribuciones_internas_asociadas'].choices)
 
-        selected_choices = self.cleaned_data['distribucion_interna']
-        all_choices = dict(self.fields['distribucion_interna'].choices)
+        selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in data]
 
-        selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in selected_choices]
+        if not data:
 
-        return list(selected_choices_values)
+            raise forms.ValidationError('La lista de campos no puede ser vacía.')
 
+        return selected_choices_values
 
-# OrdinarioFormSet = inlineformset_factory(
-#     Ordinario, DistribucionExterna,
-#     form=AddOrdinarioForm,
-#     extra=1,
-#     can_delete=True,
-#     can_delete_extra=True
-# )
+    # Validar si viene es_distribucion_externa, que haya seleccionado al menos un elemento de la lista

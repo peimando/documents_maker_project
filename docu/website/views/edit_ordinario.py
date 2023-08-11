@@ -1,20 +1,27 @@
-from django.contrib import messages
+from typing import Any, Dict
 from django.views.generic import UpdateView
-from ordinario.models import Ordinario
-from website.forms import AddOrdinarioForm
+from .ordinario_inline import OrdinarioInline
+from website.forms import DistribucionExternaFormSet
 
-class EditOrdinario(UpdateView):
 
-    template_name = 'website/ordinario/add_edit_ordinario.html'
+class EditOrdinario(
+    OrdinarioInline,
+    UpdateView
+):
 
-    model = Ordinario
-
-    form_class = AddOrdinarioForm
-
-    extra_content = {
-        'action': 'edit'
-    }
-
-    def get_success_url(self) -> str:
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         
-        messages.success
+        context = super(EditOrdinario, self ).get_context_data(**kwargs)
+        context['named_formsets'] = self.get_named_formsets()
+
+        return context
+    
+    def get_named_formsets(self):
+
+        return {
+            'distribuciones_externas': DistribucionExternaFormSet(
+                self.request.POST or None,
+                instance=self.object,
+                prefix='distribuciones_externas'
+            )  
+        }

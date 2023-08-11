@@ -1,5 +1,7 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
+{% load get_servicio_value %}
+
 
 {% block head_title %} {{ title }} {% endblock head_title %}
 
@@ -13,146 +15,125 @@
 {% block content_header_subtitle %}{% endblock content_header_subtitle %}
 
 {% block content_body %}
-        <div class="card mb-4">
-            <div class="card-header">
-                Ordinario
-            </div>
-            <div class="card-body text-left">
-                <div class="text-left">
-                    <p id="antecedente">
-                        <strong>Antecente:</strong>
-                        {% if object.antecedente != '' %}
-                            {{ object.antecendente|title }}
-                        {% else %}
-                            Sin descripción
-                        {% endif %}
-                    </p>
-                    <p id="materia">
-                        <strong>Materia:</strong>
-                        {{ object.materia|title }}
-                    </p>
-                    <p id="de">
-                        <strong>De:</strong>                        
-                        {{ object.de|title }}
-                    </p>
-                    <p id="cargo_de">
-                        <strong>Cargo:</strong>
-                        {{ object.cargo_de|title }}
-                    </p>
-                    <p id="a">
-                        <strong>A:</strong>
-                        {{ object.a|title }}
-                    </p>
-                    <p id="cargo_a">
-                        <strong>Cargo:</strong>
-                        {% if object.cargo_a != '' %}
-                            {{ object.a|title }}
-                        {% else %}
-                            Sin descripción
-                        {% endif %}
-                    </p>
-                    <p id="cuerpo">
-                        <strong>Cuerpo:</strong>
-                        {{ object.cuerpo|safe }}
-                    </p>
-                    <p id="adjunto">
-                        <strong>Adjunto:</strong>
-                        {% if object.adjunto != '' %}
-                            {{ object.adjunto }}
-                        {% else %}
-                            Sin descripción
-                        {% endif %}
-                    </p>
-                    <p id="servicio">
-                        <strong>Servicio:</strong>
-                        {{ object.servicio }}                        
-                    </p>
-                    <p id="telefono">
-                        <strong>Teléfono:</strong>
-                        {{ object.telefono }}                        
-                    </p>
-                    
-                    {% if object.tipo_distribucion == 'INT' %}
-                        <p id="distribuciones_internas">
-                            {{ object.distribucion_interna }}
-                        </p>
-                    {% endif %}
-                    
-                    {% if object.tipo_distribucion == 'EXT' %}
-                        <p id="distribuciones_externas">
-                            {{ object.distribucion_externa }}
-                        </p>
-                    {% endif %}
 
+<div class="card">
+    <div class="card-header">
+        Ordinario
+    </div>
 
+    <div class="card-body">
+        
+        <h4>Antecente:</h4>
+        <p id="antecedente" class="lead mb-4">
+            {% if object.antecedente != '' %}
+                {{ object.antecedente|title }}
+            {% else %}
+                Sin descripción
+            {% endif %}
+        </p>
 
-                    
-                </div>
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-outline-dark" href="{% url 'website:list_ordinarios' %}">
-                    <i data-feather="arrow-left"></i>&nbsp;
-                    Volver
-                </a>
-                
-                <a href="#" class="btn btn-success" type="button" id="download_document" targe="_blank">
-                    <i data-feather="download"></i>&nbsp;
-                    Descargar Ordinario
-                </a>
+        <h4>Materia:</h4>
+        <p id="materia" class="lead mb-4">
+            {{ object.materia|title }}
+        </p>
+        
+        <h4>De:</h4>                        
+        <p id="de" class="lead mb-4">
+            {{ object.de|title }}
+        </p>
+
+        <h4>Cargo:</h4>
+        <p id="cargo_de" class="lead mb-4">
+            {{ object.cargo_de|title }}
+        </p>
+
+        <h4>A:</h4>
+        <p id="a" class="lead mb-4">
+            {{ object.a|title }}
+        </p>
+
+        <h4>Cargo:</h4>
+        <p id="cargo_a" class="lead mb-4">
+            {% if object.cargo_a != '' %}
+                {{ object.a|title }}
+            {% else %}
+                Sin descripción
+            {% endif %}
+        </p>
+
+        <h4>Cuerpo:</h4>
+        <p id="cuerpo" class="lead mb-4">
+            {{ object.cuerpo|safe }}
+        </p>
+
+        <h4>Adjunto:</h4>
+        <p id="adjunto" class="lead mb-4">
+            {% if object.adjunto != '' %}
+                {{ object.adjunto }}
+            {% else %}
+                Sin descripción
+            {% endif %}
+        </p>
+
+        <h4>Servicio:</h4>
+        <p id="servicio" class="lead mb-4">
+            {{ object.servicio|get_servicio_value }}                        
+        </p>
+
+        <h4>Teléfono:</h4>
+        <p id="telefono" class="lead mb-4">
+            {{ object.telefono }}                        
+        </p>
+        
+    </div>
+
+</div>
+<br>
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Distribuciones Internas</div>
+    
+            <div class="card-body">
+                <ul>
+                {% for distribucion_interna in object.distribuciones_internas_asociadas %}
+                    <li>{{ distribucion_interna }}</li>
+                {% endfor %}
+                </ul>
             </div>
         </div>
-    
+    </div>
+
+    <div class="col-md-6">
+         <div class="card">
+            <div class="card-header">Distribuciones Externas</div>
+            <div class="card-body">
+                <ul>
+                {% for distribucion_externa in distribuciones_externas %}
+                    <li><strong>Descripción:</strong> {{ distribucion_externa.descripcion }} / <strong>Direccion:</strong>  {{ distribucion_externa.direccion }} </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="card">
+    <div class="card-footer d-flex justify-content-between">
+        
+        <a class="btn btn-outline-dark" href="{% url 'website:list_ordinarios' %}">
+            <i data-feather="arrow-left"></i>&nbsp;
+            Volver
+        </a>
+        
+        <a href="{% url 'website:download_document' object.slug %}" class="btn btn-success" type="button" id="download_document" target="_blank">
+            <i data-feather="download"></i>&nbsp;
+            Descargar Ordinario
+        </a>
+    </div>
+</div>
 
 {% endblock content_body %}
-
-{% block js %}
-{% comment %} <script src={% static 'website/js/get_ordinario_items.js' %}></script> {% endcomment %}
-
-<script>
-    let document_link = document.getElementById('download_document').addEventListener('click', download_file);
-
-    function download_file() {
-    
-        let document_url = "{% url 'website:download_document' object.slug %}"
-    
-        let antecedente = document.getElementById('antecedente').textContent;
-        let materia = document.getElementById('materia').textContent;
-        let de = document.getElementById('de').textContent;
-        let cargo_de = document.getElementById('cargo_de').textContent;
-        let a = document.getElementById('a').textContent;
-        let cargo_a = document.getElementById('cargo_a').textContent;
-        let cuerpo = document.getElementById('cuerpo').textContent;
-        let adjunto = document.getElementById('adjunto').textContent;
-        let tipo_distribucion = document.getElementById('tipo_distribucion').textContent;
-        let distribucion_interna = document.getElementById('distribucion_interna').textContent;
-    
-        data = {
-            'antecente': antecedente,
-            'materia': materia,
-            'de': de,
-            'cargo_de': cargo_de,
-            'a': a,
-            'cargo_a': cargo_a,
-            'cuerpo': cuerpo,
-            'adjunto': adjunto,
-            'tipo_distribucion': tipo_distribucion,
-            'distribucion_interna': distribucion_interna,
-            'distribucion_externa': distribucion_externa,
-            'servicio': servicio,
-            'telefono': telefono,
-        }
-    
-        fetch(document_url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: data
-        })
-        .then(response => response.json())
-        .then(response => console.log(data));
-    
-    };
-
-</script>
-{% endblock js %}

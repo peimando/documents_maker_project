@@ -7,7 +7,8 @@ from .views import (
     EditOrdinario,
     DetailOrdinario,
     DeleteOrdinario,
-    DownloadDocument
+    DownloadDocument,
+    delete_distribucion_externa
 )
 
 app_name = WebsiteConfig.name
@@ -20,5 +21,5 @@ urlpatterns = [
     path('ordinario/<slug:slug>/detail', DetailOrdinario.as_view(), name='detail_ordinario'),
     path('ordinario/<slug:slug>/delete', DeleteOrdinario.as_view(), name='delete_ordinario'),
     path('ordinario/<slug:slug>/download', DownloadDocument.as_view(), name='download_document'),
-
+    path('ordinario/distribucion_externa/<int:id>/delete', delete_distribucion_externa, name='delete_distribucion_externa')
 ]

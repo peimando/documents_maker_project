@@ -10,6 +10,12 @@ class AddDistribucionExterna(forms.ModelForm):
 
         fields = '__all__'
 
+        labels = {
+
+            'descripcion': 'Descripción',
+            'direccion': 'Dirección'
+        }
+
     def __init__(self, *args, **kwargs):
         super(AddDistribucionExterna, self).__init__(*args, **kwargs)
 
@@ -19,3 +25,6 @@ class AddDistribucionExterna(forms.ModelForm):
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
+
+            self.fields[field_key].required = False
+    

@@ -7,18 +7,18 @@ class PDF(FPDF):
 
     def __init__(
         self,
-        ant,
-        mat,
-        de,
-        cargo_de,
-        a,
-        cargo_a,
-        adj,
-        tipo_distribucion,
-        distribuciones_internas,
-        distribuciones_externas,
-        servicio,
-        telefono,
+        antecedente='',
+        materia='',
+        de='',
+        cargo_de='',
+        a='',
+        cargo_a='',
+        adjunto='',
+        distribuciones_internas_asociadas=[],
+        tiene_distribuciones_externas=False,
+        distribuciones_externas_asociadas=[],
+        servicio='',
+        telefono=None,
         **kwargs
     ):
         super(PDF, self).__init__(**kwargs)
@@ -28,18 +28,18 @@ class PDF(FPDF):
         self.set_auto_page_break(auto=True, margin=25)
 
         # Header
-        self.ant = ant
-        self.mat = mat
+        self.ant = antecedente
+        self.mat = materia
 
         # Pre footer
         self.de = de
         self.cargo_de = cargo_de
         self.a = a
         self.cargo_a = cargo_a
-        self.adj = adj
-        self.tipo_distribucion = tipo_distribucion
-        self.distribuciones_internas = distribuciones_internas  # (list)
-        self.distribuciones_externas = distribuciones_externas  # (it would be a dictionary)
+        self.adj = adjunto
+        self.distribuciones_internas = distribuciones_internas_asociadas  # (list)
+        self.tiene_distribuciones_externas = tiene_distribuciones_externas
+        self.distribuciones_externas = distribuciones_externas_asociadas  # (it would be a dictionary)
 
         # Footer
         self._direccion = 'Balmaceda #916, La Serena, Chile'
@@ -327,35 +327,52 @@ class PDF(FPDF):
         self.cell(
             0,
             3,
-            f'{self._iniciales_responsabilidad_director_hls}/{arf}/',
+            f'{self._iniciales_responsabilidad_director_hls}/{arf}',
             border=False,
             ln=True
         )
 
-        self.cell(
-            self.get_string_width('Adj:'),
-            3,
-            f'Adj: {self.adj}',
-            border=False,
-            ln=True
-        )
+        if self.adj:
+
+            self.cell(
+                self.get_string_width('Adj:'),
+                3,
+                f'Adj: {self.adj}',
+                border=False,
+                ln=True
+            )
+
+        else:
+            self.cell(
+                self.get_string_width('Adj:'),
+                3,
+                f'Adj: No hay.',
+                border=False,
+                ln=True
+            )
 
         # DISTRIBUCIÓN
         self._generar_distribuciones()
 
         self.ln(5)
 
-    def _generate_iniciales_de_responsabilidad(self, string_nombre):
+    def _generate_iniciales_de_responsabilidad(self, nombre_completo=''):
 
-        output_str_lst = string_nombre.split(' ')
-        output_lst = []
+        palabras_a_eliminar = ["Sr.", "Sra.", "SR.", "SRA."]
+        nombre_limpio = nombre_completo
 
-        for letra in output_str_lst:
+        for palabra in palabras_a_eliminar:
 
-            primera_letra = letra[0]
-            output_lst.append(primera_letra)
+            nombre_limpio = nombre_limpio.replace(palabra, "").strip()
 
-        return ''.join(output_lst)
+        iniciales = "".join([word[0].capitalize() for word in nombre_limpio.split()])
+    
+
+        if iniciales == 'LIMC':
+            
+            return ''
+        
+        return iniciales
 
     def _generar_distribuciones(self):
 
@@ -370,40 +387,29 @@ class PDF(FPDF):
 
         self.set_font('Manrope-Regular', '', 7)
 
-        for tipo in self.tipo_distribucion:
+        if self.tiene_distribuciones_externas:
 
-            if tipo == 'EXT':
+            for distrib_ext in self.distribuciones_externas:
 
-                distribuciones_externas = [
-                    {
-                        'descripcion': 'Jefe Laboratorio Regional PKU-HC',
-                        'direccion': 'Portales 3239, Edificio CDT, 3er Piso, Santiago Centro.'
-                    }
-                ]
+                self.cell(
+                    0,
+                    3,
+                    f"- {distrib_ext['descripcion']}, {distrib_ext['direccion']}",
+                    border=False,
+                    ln=True
+                )
 
-                for distrib_ext in distribuciones_externas:
-                    
-                    for item in distrib_ext:
+        if self.distribuciones_internas:
 
-                        self.cell(
-                            0,
-                            3,
-                            f"- {distrib_ext[item]}",
-                            border=False,
-                            ln=True
-                        )
+            for distrib_int in self.distribuciones_internas:
 
-            if tipo == 'INT':
-
-                for distrib_int in self.distribuciones_internas:
-
-                    self.cell(
-                        0,
-                        3,
-                        f"- {distrib_int}",
-                        border=False,
-                        ln=True
-                    )
+                self.cell(
+                    0,
+                    3,
+                    f"- {distrib_int}",
+                    border=False,
+                    ln=True
+                )
 
     # overriding footer
     def footer(self):

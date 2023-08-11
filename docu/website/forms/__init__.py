@@ -1,3 +1,3 @@
-from .pdf_generation_form import OrdinarioPdfForm
 from .add_ordinario import AddOrdinarioForm
 from .add_distribucion_externa import AddDistribucionExterna
+from .distribucion_externa_formset import DistribucionExternaFormSet

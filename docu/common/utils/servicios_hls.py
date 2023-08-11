@@ -2,6 +2,9 @@
 Servicios o Unidades del HLS
 """
 
+#@ Convertir esta clase a modelo para poder agregar servicios y cambiar a ForeignKey
+# Servicios y Distribuciones Internas
+
 
 class ServiciosChoices(object):
 

@@ -3,9 +3,10 @@ from django.http import FileResponse
 from django.views.generic import View
 from common.utils.pdf import PDF
 from pathlib import Path
-
-from ordinario.models import Ordinario
-
+from django.shortcuts import get_object_or_404
+from ordinario.models import Ordinario, DistribucionExterna
+from django.forms.models import model_to_dict
+from common.utils.servicios_hls import ServiciosChoices
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -14,41 +15,28 @@ class DownloadDocument(View):
 
     template_name = 'website/add_ordinario.html'
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
 
-        print(request.POST.get('antecedente'))
+        ordinario = get_object_or_404(Ordinario, slug=kwargs['slug'])
 
-        data = {
-            'antecente': request.POST.get('antecente', ''),
-            'materia': request.POST.get('materia', ''),
-            'de': request.POST.get('de', ''),
-            'cargo_de': request.POST.get('cargo_de', ''),
-            'a': request.POST.get('a', ''),
-            'cargo_a': request.POST.get('cargo_a', ''),
-            'cuerpo': request.POST.get('cuerpo', ''),
-            'adjunto': request.POST.get('adjunto', ''),
-            'tipo_distribucion': request.POST.get('tipo_distribucion', ''),
-            'distribucion_interna': request.POST.getlist('distribucion_interna', []),
-            'distribucion_externa': request.POST.get('distribucion_externa', ''),
-            # 'direccion_distribucion_externa': request.GET.get('direccion_distribucion_externa', ''),
-            'servicio': request.POST.get('servicio', ''),
-            'telefono': request.POST.get('telefono', ''),
-        }
+        # Obtengo la lista de claves de las distribuciones internas y envio al pdf los valores
+
+        distribuciones_externas = DistribucionExterna.objects.filter(ordinario=ordinario).values('descripcion', 'direccion')
 
         pdf = PDF(
             format='Letter',
-            ant=data['antecente'],
-            mat=data['materia'],
-            de=data['de'],
-            cargo_de=data['cargo_de'],
-            a=data['a'],
-            cargo_a=data['cargo_a'],
-            adj=data['adjunto'],
-            tipo_distribucion=data['tipo_distribucion'],
-            distribuciones_internas=data['distribucion_interna'],
-            distribuciones_externas=data['distribucion_externa'],  # dict of distribuciones externas
-            servicio=data['servicio'],
-            telefono=data['telefono'],
+            antecedente=ordinario.antecedente,
+            materia=ordinario.materia,
+            de=ordinario.de,
+            cargo_de=ordinario.cargo_de,
+            a=ordinario.a,
+            cargo_a=ordinario.cargo_a,
+            adjunto=ordinario.adjunto,
+            distribuciones_internas_asociadas=ordinario.distribuciones_internas_asociadas,
+            tiene_distribuciones_externas=ordinario.tiene_distribucion_externa,
+            distribuciones_externas_asociadas=distribuciones_externas,
+            servicio=ordinario.get_servicio_value(ordinario.servicio),
+            telefono=str(ordinario.telefono),
         )
 
         pdf.add_page()
@@ -58,17 +46,17 @@ class DownloadDocument(View):
         # Body of the ordinario
         pdf.set_text_color(111, 105, 99)
         pdf.set_font('Manrope-Regular', '', 10)
-        pdf.write_html(data['cuerpo'])
+        pdf.write_html(ordinario.cuerpo)
 
         pdf.generate_firma()
 
         pdf.inform_footer()
         
         # Output file
-        data['materia'] = data['materia'].lower().replace(' ', '_')
+        name = ordinario.materia.lower().replace(' ', '_')
 
         path = BASE_DIR / 'documentos'
-        fname = f"ordinario_{datetime.now().strftime('%d%m%y')}_{data['mat']}.pdf"
+        fname = f"ordinario_{datetime.now().strftime('%d%m%y')}_{name}.pdf"
 
         file_path = Path.joinpath(path, fname)
 
@@ -79,15 +67,3 @@ class DownloadDocument(View):
             as_attachment=True,  # False => if I don't want to download
             content_type='application/pdf'
         )
-
-
-# class DownloadDocument(View):
-
-#     template_name = 'website/add_ordinario.html'
-
-#     def get(self, request, *args, **kwargs):
-
-#         ordinario_slug = kwargs['slug']
-#         ordinario_obj = Ordinario.objects.get(slug=ordinario_slug)
-
-#         print(ordinario_obj)
