@@ -13,4 +13,4 @@ class ListOrdinarios(ListView):
     
     queryset = Ordinario.objects.all().order_by('-id')
 
-    paginate_by = 2
+    paginate_by = 10

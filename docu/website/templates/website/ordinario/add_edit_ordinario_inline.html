@@ -1,5 +1,6 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block head_title %} {{ title }} {% endblock head_title %}
 
@@ -41,6 +42,15 @@
     <div id="default">
         <div class="card mb-4">
             <div class="card-header">Genere su documento</div>
+
+            {% comment %} <div class="card-body">
+
+                <div class="sbp-preview">
+                    <div class="sbp-preview-content">
+                        {% crispy form %}
+                    </div>
+                </div>
+            </div> {% endcomment %}
 
             <form action="" method="POST" id="formAddOrdinario">
                 {% csrf_token %}
@@ -94,9 +104,8 @@
                                 </div>
                             {% endfor %}
 
-                            
                             <!-- Distribuciones Externas FormSet -->
-
+                            <div id="formsetDistExtContainer">
                             {% with named_formsets.distribuciones_externas as formset %}
 
                                 {{ formset.management_form }}
@@ -188,7 +197,9 @@
                                     <a href="#" id="add-variant-button" class="btn btn-orange add-distribucion-externa">Agregar Distribución Externa</a> <!-- id="add-inlineformsetname-button" -->
                                 </div>
                                 <br>
-                                {% endwith %}
+                            {% endwith %}
+                            </div>
+                            
                         
                             <!-- Actions -->
                             <div class="sbp-preview-text d-flex justify-content-between">
@@ -211,6 +222,35 @@
 {% endblock content_body %}
 
 {% block js %}
+
+<script type='text/javascript'>
+
+    let radio_tiene_distribucion_externa = document.querySelectorAll('input[name="tiene_distribucion_externa"]');
+    let div_formset_distribuciones_externas = document.querySelector('#formsetDistExtContainer');
+
+    radio_tiene_distribucion_externa.forEach(function(radioButton) {
+
+        radioButton.addEventListener('change', function() {
+            
+            var selectedValue = document.querySelector('input[name="tiene_distribucion_externa"]:checked').value;
+            
+            if (selectedValue == 'True') {
+
+                div_formset_distribuciones_externas.style.display = 'block';  
+
+            } else {
+                div_formset_distribuciones_externas.style.display = 'none';
+            }  
+        });
+    });
+
+    window.onload = function() { 
+
+        div_formset_distribuciones_externas.style.display = 'none';
+
+    }
+
+</script>
 
 <script type='text/javascript'>
  

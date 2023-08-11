@@ -5,8 +5,6 @@ from ordinario.models import DistribucionExterna
 
 def delete_distribucion_externa(request, id):
 
-    print(id)
-
     try:
         distribucion_externa = DistribucionExterna.objects.get(id=id)
     

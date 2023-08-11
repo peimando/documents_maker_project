@@ -14,8 +14,6 @@ class AddOrdinarioInline(
         context = super(AddOrdinarioInline, self).get_context_data(**kwargs)
         context['named_formsets'] = self.get_named_formsets()
 
-        print('CONTEXT ====> ', context['named_formsets'])
-
         return context
     
     def get_named_formsets(self):

@@ -6,7 +6,7 @@ from pathlib import Path
 from django.shortcuts import get_object_or_404
 from ordinario.models import Ordinario, DistribucionExterna
 from django.forms.models import model_to_dict
-
+from common.utils.servicios_hls import ServiciosChoices
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -19,9 +19,8 @@ class DownloadDocument(View):
 
         ordinario = get_object_or_404(Ordinario, slug=kwargs['slug'])
 
+        # Obtengo la lista de claves de las distribuciones internas y envio al pdf los valores
         distribuciones_externas = DistribucionExterna.objects.filter(ordinario=ordinario).values('descripcion', 'direccion')
-
-        print(distribuciones_externas)
 
         pdf = PDF(
             format='Letter',
@@ -34,8 +33,8 @@ class DownloadDocument(View):
             adjunto=ordinario.adjunto,
             distribuciones_internas_asociadas=ordinario.distribuciones_internas_asociadas,
             tiene_distribuciones_externas=ordinario.tiene_distribucion_externa,
-            distribuciones_externas_asociadas=distribuciones_externas,  # dict of distribuciones externas
-            servicio=ordinario.servicio,
+            distribuciones_externas_asociadas=distribuciones_externas,
+            servicio=ordinario.get_servicio_value(ordinario.servicio),
             telefono=str(ordinario.telefono),
         )
 
