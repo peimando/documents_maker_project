@@ -1,7 +1,6 @@
 from typing import Any, Dict
 from django.views.generic import DetailView
-from ordinario.models import Ordinario
-
+from ordinario.models import Ordinario, DistribucionExterna
 
 class DetailOrdinario(DetailView):
 
@@ -9,6 +8,14 @@ class DetailOrdinario(DetailView):
 
     model = Ordinario
 
-    extra_context = {
-          'title':  'Detalle Ordinario'
-    }
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'Detalle Ordinario'
+
+        distribuciones_externas = DistribucionExterna.objects.filter(ordinario_id=self.object).values('descripcion', 'direccion')
+
+        context['distribuciones_externas'] = distribuciones_externas
+
+        return context

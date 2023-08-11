@@ -1,5 +1,6 @@
 {% extends 'website/base_website.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block head_title %} {{ title }} {% endblock head_title %}
 
@@ -38,20 +39,28 @@
 
 {% block content_body %}
 
-    {% if action == 'create' %}
     <div id="default">
         <div class="card mb-4">
             <div class="card-header">Genere su documento</div>
 
+            {% comment %} <div class="card-body">
+
+                <div class="sbp-preview">
+                    <div class="sbp-preview-content">
+                        {% crispy form %}
+                    </div>
+                </div>
+            </div> {% endcomment %}
+
             <form action="" method="POST" id="formAddOrdinario">
+                {% csrf_token %}
+
                 <div class="card-body">
 
                     <!-- Component Preview-->
                     <div class="sbp-preview">
                         <div class="sbp-preview-content">
                             
-                            {% csrf_token %}
-
                             {% if form.non_field_errors %}
                                 <ul>
                                 {% for error in form.non_field_errors %}
@@ -74,10 +83,10 @@
                             <!-- CKEditor TextArea -->
                             {{ form.media }}
 
-                            <!-- Ordinario Form -->
+                            <!-- MAIN: Ordinario Form -->
                             {% for field in form %}
                                 <div class="form-group mb-3">
-                                    {{ field.label_tag}}
+                                    <label> {{ field.label }}</label>
 
                                     {% if field.field.required %}
                                         <span style="color: red;" class="required">*</span>
@@ -95,71 +104,121 @@
                                 </div>
                             {% endfor %}
 
+                            <!-- Distribuciones Externas FormSet -->
+                            <div id="formsetDistExtContainer">
+                            {% with named_formsets.distribuciones_externas as formset %}
+
+                                {{ formset.management_form }}
+
+                    
+                                <div class="table-responsive card mt-4">
+                                    <div class="card-header card-header-secondary">
+                                        <h4 class="card-title">Agregar Distribuciones Externas</h4>
+                                    </div>
+                                    <table class="table card-header">
+                                        <thead class="text-primary">
+                                            <th>Descripción <span style="color: red;" class="required">*</span></th>
+                                            <th>Dirección<span style="color: red;" class="required">*</span></th>
+                                            <th>Eliminar?</th>
+                                            <th></th>
+                                        </thead>
+                                        <tbody id="item-distribExterna">  <!-- id="item-inlineformsetname" -->
+                                            <!-- formset non forms errors -->
+                                            {% for error in formset.non_form_errors %}
+                                                <span style="color: red">{{ error }}</span>
+                                            {% endfor %}
+
+                                            {% for formss in formset %}
+                                                {{ formss.management_form }}
+                                                <tr id="distribuciones_externas-{{ forloop.counter0 }}" class=hide_all>  <!-- id="inlineformsetname-counter" -->
+                                                    {{ formss.id }}
+                                                    
+                                                    {% for field in formss.visible_fields %}
+                                                        <td>
+                                                            {{field}}
+                                                            {% for error in field.errors %}
+                                                                <span style="color: red">{{ error }}</span>
+                                                            {% endfor %}
+                                                        </td>
+                                                    {% endfor %}
+
+                                                    <!-- delete code -->
+                                                    {% if formss.instance.id %}
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal{{formss.instance.id}}">
+                                                                Eliminar
+                                                            </button>
+
+                                                            <!-- Modal -->
+                                                            <div class="modal fade" id="modal{{formss.instance.id}}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{formss.instance.id}}" aria-hidden="true">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="modalLabel{{formss.instance.id}}">¿Está seguro que quiere eliminar esta distribución?</h5>
+                                                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                            <p><strong>Descripción: </strong> {{ formss.instance.descripcion }}</p>
+                                                                            <p><strong>Dirección: </strong>{{ formss.instance.direccion }}</p>
+                                                                        </div>
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Cancelar</button>
+
+                                                                            <a href="{% url 'website:delete_distribucion_externa' formss.instance.pk %}" type="button" class="btn btn-danger">Sí, eliminar</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>            
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                    <script type="text/html" id="distExterna-template">  // id="inlineformsetname-template"
+                                        // id='inlineformsetname-__prefix__' 
+                                        <tr id="distribuciones_externas-__prefix__" class= hide_all>
+                                            {% for fields in formset.empty_form.hidden_fields %}
+                                                {{ fields }}
+                                            {% endfor %}
+                                        
+                                            {% for fields in formset.empty_form.visible_fields %}
+                                                <td>{{fields}}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    </script>
+                                    
+                                </div>
+                                <br>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <a href="#" id="add-variant-button" class="btn btn-orange add-distribucion-externa">Agregar Distribución Externa</a> <!-- id="add-inlineformsetname-button" -->
+                                </div>
+                                <br>
+                            {% endwith %}
+                            </div>
+                            
+                        
+                            <!-- Actions -->
+                            <div class="sbp-preview-text d-flex justify-content-between">
+                                <a href="{% url 'website:list_ordinarios' %}" class="btn btn-outline-dark" type="button">                       
+                                    <i data-feather="arrow-left"></i>&nbsp;
+                                    Volver
+                                </a>
+
+                                <button type="submit" class="btn btn-primary" id="AddOrdinario">
+                                    <i data-feather="save"></i>&nbsp;
+                                    Guardar
+                                </button>
+                            </div>
                         </div>
-                    <br>
-
-                    <div class="sbp-preview-text d-flex justify-content-between">
-                        <a href="{% url 'website:list_ordinarios' %}" class="btn btn-outline-dark" type="button">                       
-                            <i data-feather="arrow-left"></i>&nbsp;
-                            Volver
-                        </a>
-
-                        <button type="submit" class="btn btn-primary" id="AddOrdinario">
-                            <i data-feather="save"></i>&nbsp;
-                            Guardar
-                        </button>
                     </div>
                 </div>
             </form>
-
-            <div id="btnContainer">
-                <button class="btn btn-primary" onclick="addDistribucionExterna()" id="btnAddDistribucionExterna">
-                    <i data-feather="plus"></i>
-                    Agregar
-                </button>
-            </div>
-
-            <div id="formDistribucionesExternasContent" class="card-body">
-                
-{% comment %} 
-                {{ ordinario_distribucion_externa_formset.non_form_errors }} {% endcomment %}
-
-                {{ ordinario_distribucion_externa_formset.management_form }}
-                
-                {% for form in ordinario_distribucion_externa_formset%}
-
-                {{ form }}
-                <hr>
-                
-                {% endfor %}
-        
-                {% comment %} {% for form in ordinario_distribucion_externa_formset %}
-
-                    {{ form }} 
-                        
-                    {% if ordinario_distribucion_externa_formset.can_delete %}
-                        {{ form.DELETE }}
-                    {% endif %}
-                    </div>
-                {% endfor %} {% endcomment %}
-        
-            </div>
-
         </div>
     </div> 
-    {% elif action == 'edit' %}
-    <form action="" method="POST" id='formEditOrdinario'>
-        {% csrf_token %}
-        {{ form.media }}
-        {{ form }}
-        <br>
-        <div class="modal-footer">
-            <a class="btn btn-light" type="button" href="{% url 'website:list_ordinarios' %}">Volver</a>
-            <button class="btn btn-primary" type="submit" id="btnEditOrdinario">Guardar</button>
-        </div>
-    </form>
-    {% endif %}
-
 {% endblock content_body %}
 
 {% block js %}
@@ -167,10 +226,7 @@
 <script type='text/javascript'>
 
     let radio_tiene_distribucion_externa = document.querySelectorAll('input[name="tiene_distribucion_externa"]');
-    let div_formset_distribuciones_externas = document.querySelector('#formDistribucionesExternasContent');
-
-    let btnContainer = document.getElementById('btnContainer');
-    
+    let div_formset_distribuciones_externas = document.querySelector('#formsetDistExtContainer');
 
     radio_tiene_distribucion_externa.forEach(function(radioButton) {
 
@@ -180,12 +236,10 @@
             
             if (selectedValue == 'True') {
 
-                div_formset_distribuciones_externas.style.display = 'block';
-                btnContainer.style.display = 'block';
+                div_formset_distribuciones_externas.style.display = 'block';  
 
             } else {
                 div_formset_distribuciones_externas.style.display = 'none';
-                btnContainer.style.display = 'none';
             }  
         });
     });
@@ -193,31 +247,25 @@
     window.onload = function() { 
 
         div_formset_distribuciones_externas.style.display = 'none';
-        btnContainer.style.display = 'none';
 
     }
 
-    function addDistribucionExterna(e) {
+</script>
 
-        e.preventDefault();
-
-        var total_forms = document.querySelector('#id_distribucionexterna_set-TOTAL_FORMS');
-
-        var inputDescripcion = document.querySelector('#id_distribucionexterna_set-0-descripcion').cloneNode(true);
-
-        inputDescripcion.name = 'distribucionexterna_set-' + total_forms.value + '-descripcion';
-        inputDescripcion.id = 'id_distribucionexterna_set-' + total_forms.value + '-descripcion';
-
-        var inputDireccion = document.querySelector('#id_distribucionexterna_set-0-direccion').cloneNode(true);
-
-        inputDireccion.name = 'distribucionexterna_set-' + total_forms.value + '-direccion';
-        inputDireccion.id = 'id_distribucionexterna_set-'+ total_forms.value + '-direccion';
-
-        document.querySelector('#formDistribucionesExternasContent').appendChild(inputDescripcion);
-        document.querySelector('#formDistribucionesExternasContent').appendChild(inputDireccion);
-
-        total_forms.value = parseInt(total_forms.value) + 1;
-    }
-
+<script type='text/javascript'>
+ 
+    $(document).ready(function() {
+        // when user clicks add distribucion externa btn of distribuciones externas
+        $('.add-distribucion-externa').click(function(ev) {
+              ev.preventDefault();
+              var count = $('#item-distribExterna').children().length;
+              var tmplMarkup = $('#distExterna-template').html();
+              var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+              $('#item-distribExterna').append(compiledTmpl);
+      
+              // update form count
+              $('#id_distribuciones_externas-TOTAL_FORMS').attr('value', count+1);
+        });
+    });
 </script>
 {% endblock js %}

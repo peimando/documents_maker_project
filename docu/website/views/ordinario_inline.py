@@ -11,7 +11,7 @@ class OrdinarioInline():
 
     model = Ordinario
 
-    template_name = 'website/ordinario/add_edit_ordinario_inline.html'
+    template_name = 'website/ordinario/add_edit_ordinario.html'
 
     def form_valid(self, form):
 

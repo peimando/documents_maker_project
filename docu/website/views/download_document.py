@@ -20,6 +20,7 @@ class DownloadDocument(View):
         ordinario = get_object_or_404(Ordinario, slug=kwargs['slug'])
 
         # Obtengo la lista de claves de las distribuciones internas y envio al pdf los valores
+
         distribuciones_externas = DistribucionExterna.objects.filter(ordinario=ordinario).values('descripcion', 'direccion')
 
         pdf = PDF(

@@ -6,6 +6,4 @@ from .detail_ordinario import DetailOrdinario
 from .download_document import DownloadDocument
 from .delete_ordinario import DeleteOrdinario
 from .ordinario_inline import OrdinarioInline
-from .add_ordinario_inline import AddOrdinarioInline
-from .edit_ordinario_inline import EditOrdinarioInline
 from .delete_distribucion_externa import delete_distribucion_externa
