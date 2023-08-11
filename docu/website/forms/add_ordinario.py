@@ -1,7 +1,6 @@
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 from common.utils.servicios_hls import ServiciosChoices
-
 from ordinario.models import Ordinario
 
 
@@ -122,11 +121,3 @@ class AddOrdinarioForm(forms.ModelForm):
         return selected_choices_values
 
     # Validar si viene es_distribucion_externa, que haya seleccionado al menos un elemento de la lista
-
-    # def clean_servicio(self):
-
-    #     servicio_name_value = self.cleaned_data['servicio']
-    #     servicio_name_value = dict(self.fields['servicio'].choices)[servicio_name_value]
-
-    #     return servicio_name_value
-    
