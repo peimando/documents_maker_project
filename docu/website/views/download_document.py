@@ -4,8 +4,9 @@ from django.views.generic import View
 from common.utils.pdf import PDF
 from pathlib import Path
 from django.shortcuts import get_object_or_404
-from ordinario.models import Ordinario
-
+from ordinario.models import Ordinario, DistribucionExterna
+from django.forms.models import model_to_dict
+from common.utils.servicios_hls import ServiciosChoices
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -18,9 +19,13 @@ class DownloadDocument(View):
 
         ordinario = get_object_or_404(Ordinario, slug=kwargs['slug'])
 
+        # Obtengo la lista de claves de las distribuciones internas y envio al pdf los valores
+
+        distribuciones_externas = DistribucionExterna.objects.filter(ordinario=ordinario).values('descripcion', 'direccion')
+
         pdf = PDF(
             format='Letter',
-            antecedente=ordinario.antecendente,
+            antecedente=ordinario.antecedente,
             materia=ordinario.materia,
             de=ordinario.de,
             cargo_de=ordinario.cargo_de,
@@ -29,8 +34,8 @@ class DownloadDocument(View):
             adjunto=ordinario.adjunto,
             distribuciones_internas_asociadas=ordinario.distribuciones_internas_asociadas,
             tiene_distribuciones_externas=ordinario.tiene_distribucion_externa,
-            distribuciones_externas_asociadas=ordinario.distribuciones_externas_asociadas,  # dict of distribuciones externas
-            servicio=ordinario.servicio,
+            distribuciones_externas_asociadas=distribuciones_externas,
+            servicio=ordinario.get_servicio_value(ordinario.servicio),
             telefono=str(ordinario.telefono),
         )
 
@@ -62,15 +67,3 @@ class DownloadDocument(View):
             as_attachment=True,  # False => if I don't want to download
             content_type='application/pdf'
         )
-
-
-# class DownloadDocument(View):
-
-#     template_name = 'website/add_ordinario.html'
-
-#     def get(self, request, *args, **kwargs):
-
-#         ordinario_slug = kwargs['slug']
-#         ordinario_obj = Ordinario.objects.get(slug=ordinario_slug)
-
-#         print(ordinario_obj)

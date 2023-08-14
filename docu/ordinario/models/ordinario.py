@@ -7,8 +7,10 @@ from common.utils.servicios_hls import ServiciosChoices
 
 class Ordinario(models.Model):
 
-    antecendente = models.CharField(
-        max_length=100
+    antecedente = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
     )
 
     materia = models.CharField(
@@ -28,13 +30,17 @@ class Ordinario(models.Model):
     )
 
     cargo_a = models.CharField(
-        max_length=300
+        max_length=300,
+        blank=True,
+        null=True
     )
 
     cuerpo = models.TextField()
 
     adjunto = models.CharField(
-        max_length=50
+        max_length=50,
+        null=True,
+        blank=True
     )
     
     distribuciones_internas_asociadas = models.JSONField(
@@ -46,13 +52,6 @@ class Ordinario(models.Model):
         null=True,
         blank=True,
         default=False
-    )
-
-    distribuciones_externas_asociadas = models.ForeignKey(
-        'DistribucionExterna',
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL
     )
 
     servicio = models.CharField(
@@ -85,6 +84,9 @@ class Ordinario(models.Model):
             }
         )
 
+    def get_servicio_value(self, key):
+
+        return dict(ServiciosChoices.SERVICIOS_CHOICES)[key]
 
 def ordinario_post_save(sender, instance, created, *args, **kwargs):
     if created or instance.slug in [None, ""]:

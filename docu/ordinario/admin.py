@@ -5,5 +5,17 @@ from .models import (
 )
 
 # Register your models here.
-admin.site.register(Ordinario)
-admin.site.register(DistribucionExterna)
+@admin.register(Ordinario)
+class OrdinarioAdmin(admin.ModelAdmin):
+
+    ordering = ['-id']
+
+    list_display = ['id', 'materia', 'servicio']
+
+
+@admin.register(DistribucionExterna)
+class DistribucionExternaAdmin(admin.ModelAdmin):
+
+    ordering = ['-id']
+
+    

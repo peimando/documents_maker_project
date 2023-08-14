@@ -1,10 +1,7 @@
 from django import forms
-from common.utils.distribucion import TipoDistribucion
 from ckeditor.widgets import CKEditorWidget
 from common.utils.servicios_hls import ServiciosChoices
-
-from ordinario.models import Ordinario, DistribucionExterna
-from django.forms import inlineformset_factory
+from ordinario.models import Ordinario
 
 
 class AddOrdinarioForm(forms.ModelForm):
@@ -16,7 +13,7 @@ class AddOrdinarioForm(forms.ModelForm):
                 'class': 'form-control'
             }
         ),
-        # help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
+        help_text='Para seleccionar más de una distribución, mantenga presionada la tecla Ctrl.',
         required=False,
         choices=ServiciosChoices.SERVICIOS_CHOICES
     )
@@ -26,7 +23,7 @@ class AddOrdinarioForm(forms.ModelForm):
         model = Ordinario
 
         fields = [
-            'antecendente',
+            'antecedente',
             'materia',
             'de',
             'cargo_de',
@@ -38,23 +35,22 @@ class AddOrdinarioForm(forms.ModelForm):
             'telefono',
             'distribuciones_internas_asociadas',
             'tiene_distribucion_externa',
-            'distribuciones_externas_asociadas',
         ]
 
         labels = {
-            'antecendente': 'Antecedentes',
+            'antecedente': 'Antecedentes',
             'cargo_de': 'Cargo',
             'cargo_a': 'Cargo',
             'distribuciones_internas_asociadas':'Distribuciones Internas Asociadas',
-            'distribuciones_externas_asociadas': 'Distribuciones externas asociadas',
             'telefono': 'Teléfono',
         }
 
     def __init__(self, *args, **kwargs):
+
         super(AddOrdinarioForm, self).__init__(*args, **kwargs)
 
         for field_key in [
-            'antecendente',
+            'antecedente',
             'materia',
             'de',
             'cargo_de',
@@ -66,18 +62,16 @@ class AddOrdinarioForm(forms.ModelForm):
             'telefono',
             'distribuciones_internas_asociadas',
             'tiene_distribucion_externa',
-            'distribuciones_externas_asociadas',
         ]:
             self.fields[field_key].widget.attrs['class'] = \
                 'form-control'
             
             if self.fields in (
-                'ant',
+                'antecedente',
                 'cargo_de',
                 'cargo_a',
-                'adj',
-                'tiene_distribucion_externa',
-                'distribuciones_externas_asociadas',
+                'adjunto',
+                'tiene_distribucion_externa'
             ):
                 
                 self.fields[field_key].required = False   
@@ -88,19 +82,27 @@ class AddOrdinarioForm(forms.ModelForm):
         self.fields['cargo_de'].widget.attrs['placeholder'] = \
             'Cargo de quién envía'
         
+        self.fields['cargo_a'].required = False
+        
         self.fields['a'].widget.attrs['placeholder'] = \
             'Nombre hacia quién va dirigido el ordinario'
         
         self.fields['cargo_a'].widget.attrs['placeholder'] = \
             'Cargo de la persona a quien se le envía el ordinario'
         
+        self.fields['telefono'].widget.attrs['placeholder'] = \
+                'Número teléfonico del servicio que envía el ordinario'
+        
+        self.fields['adjunto'].widget.attrs['placeholder'] = \
+                'Cantidad de adjuntos que se enviarán'
+
         self.fields['cuerpo'].widget = CKEditorWidget()
 
         self.fields['tiene_distribucion_externa'] = forms.ChoiceField(
-            widget=forms.RadioSelect,
+            widget=forms.RadioSelect(),
             choices=[
                 (True, 'Sí'),
-                (False, 'NO')
+                (False, 'No')
             ]
         )
 
@@ -119,31 +121,3 @@ class AddOrdinarioForm(forms.ModelForm):
         return selected_choices_values
 
     # Validar si viene es_distribucion_externa, que haya seleccionado al menos un elemento de la lista
-
-    def clean_servicio(self):
-
-        servicio_name_value = self.cleaned_data['servicio']
-        servicio_name_value = dict(self.fields['servicio'].choices)[servicio_name_value]
-
-        return servicio_name_value
-    
-    def clean_distribucion_interna(self):
-
-        # selected_choices = self.cleaned_data['distribucion_interna']
-        # all_choices = dict(self.fields['distribucion_interna'].choices)
-
-        # selected_choices_values = [all_choices[selected_key] for selected_key in all_choices.keys() if selected_key in selected_choices]
-
-        # return list(selected_choices_values)
-        pass
-
-
-# Completar formset
-
-# OrdinarioFormSet = inlineformset_factory(
-#     Ordinario, DistribucionExterna,
-#     form=AddOrdinarioForm,
-#     extra=1,
-#     can_delete=True,
-#     can_delete_extra=True
-# )

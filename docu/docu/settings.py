@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-
+from django.contrib.messages import constants as message_constants
 import dj_database_url
 import os
 from pathlib import Path
@@ -66,6 +66,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'ckeditor',
     'corsheaders',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 PROJECT_APPS = [
@@ -154,6 +156,16 @@ else:
         'HOST': os.environ.get('DATABASE_HOST'),
         'PORT': os.environ.get('DATABASE_PORT'),
     }
+
+# Django messages
+
+MESSAGE_TAGS = {
+    message_constants.DEBUG: 'alert-light',
+    message_constants.INFO: 'alert-primary',
+    message_constants.SUCCESS: 'alert-success',
+    message_constants.WARNING: 'alert-warning',
+    message_constants.ERROR: 'alert-danger',
+}
 
 
 # Password validation
@@ -268,3 +280,9 @@ CKEDITOR_CONFIGS = {
         'tabSpaces': 8
     },
 }
+
+# New settings for Crispy Forms 2.0
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"

@@ -5,3 +5,5 @@ from .edit_ordinario import EditOrdinario
 from .detail_ordinario import DetailOrdinario
 from .download_document import DownloadDocument
 from .delete_ordinario import DeleteOrdinario
+from .ordinario_inline import OrdinarioInline
+from .delete_distribucion_externa import delete_distribucion_externa
