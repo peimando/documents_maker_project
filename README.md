@@ -17,5 +17,5 @@ docker compose up
 ```
 ## Dependencies
 ```bash
-python3.10
+python3.11.4
 ```
